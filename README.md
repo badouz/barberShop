@@ -57,3 +57,21 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+version 1.0.0
+users(ID,name,email,password,phone,ville,zipcode,role)
+BarberShops(ID,name,addresse,ville,zipcode,latitude,Longitude,#barber_ID)
+BarberShopsImages(ID,path,is_primary,#BarberShop_ID)
+Barbermans(ID,name,#BarberShop_ID)
+Services(ID,name,price,time,#BarberShop_ID)
+ServicesImages(ID,path,is_primary,#Service_ID)
+Reservations(ID,#Client_ID,#Barbermans_ID,dateReservation,Price)
+Reservation_Services(#reservation_ID,Service_ID)
+
+
+
+dans la version nuemro V2.0.0 
+ajouter rating , opening time,
+system de calandrier + age + prendre en charge la possiblité que plusieur personne travaill on meme temps
+
+dans la version 3.0.0 on va ajouter chat
