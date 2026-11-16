@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BarberManController;
 use App\Http\Controllers\DashBoardController;
 // guest route 
 Route::get('/login',[AuthController::class,"auth"])->name("login");
@@ -13,6 +14,9 @@ Route::post('/register',[AuthController::class,"register"])->name("register");
 Route::get('/dashboard',[DashBoardController::class,"index"])
 ->name("dashboard")
 ->middleware("auth");
+
+Route::resource('barber-men', BarberManController::class)
+->middleware('auth');
 
 Route::post('/logout',[AuthController::class,"logout"])
 ->name("logout")
