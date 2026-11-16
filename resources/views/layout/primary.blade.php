@@ -196,9 +196,15 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="index.html">
+              <a class="nav-link" href="{{ route('dashboard') }}">
                 <span class="menu-title">Dashboard</span>
                 <i class="mdi mdi-home menu-icon"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ route('services.index') }}">
+                <span class="menu-title">Services</span>
+                <i class="mdi mdi-content-cut menu-icon"></i>
               </a>
             </li>
             <li class="nav-item">
