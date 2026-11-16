@@ -10,8 +10,11 @@ class Reservation extends Model
 {
     protected $fillable = [
         'dateReservation',
+        'time',
         'price',
         'barbermans_id',
+        'name',
+        'phone',
     ];
 
     public function barberMan(): BelongsTo

@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class BarberMan extends Model
 {
+    protected $table = 'barbermans';
+
     protected $fillable = [
         'name',
         'barbershop_id',
@@ -20,6 +22,6 @@ class BarberMan extends Model
 
     public function reservations(): HasMany
     {
-        return $this->hasMany(Reservation::class, 'barbermans_id', 'id');
+        return $this->hasMany(Reservation::class, 'barberman_id', 'id');
     }
 }

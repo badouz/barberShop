@@ -17,6 +17,7 @@ class BarberShop extends Model
         'longitude',
         'user_id',
     ];
+    protected $table="barbershops";
 
     public function barberMen(): HasMany
     {

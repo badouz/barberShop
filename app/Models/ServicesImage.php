@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ServicesImage extends Model
 {
+    protected $table = 'servicesimages';
+
     protected $fillable = [
         'path',
         'is_primary',
