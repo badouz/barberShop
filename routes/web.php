@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BarberManController;
 use App\Http\Controllers\DashBoardController;
 use App\Http\Controllers\ServiceController;
 
@@ -10,6 +11,12 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+Route::resource('barber-men', BarberManController::class)
+->middleware('auth');
+
+Route::post('/logout',[AuthController::class,"logout"])
+->name("logout")
+->middleware("auth");
 // Guest routes 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, "auth"])->name("login");
