@@ -1,3 +1,0 @@
-[33m45c12f8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mBarberMan[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;31morigin/BarberMan[m[33m, [m[1;32mmain[m[33m)[m logut + dashboard
-[33ma493729[m Add users migration (role, phone, address, zip) and auth views/controller
-[33m4e2a2f9[m Add models and migrations with fixed relations
