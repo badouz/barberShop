@@ -57,6 +57,9 @@
                 @endforeach
             </tbody>
         </table>
+        <div class="mt-3">
+            {{ $barbershops->links() }}
+        </div>
     </div>
 </div>
 @endsection
