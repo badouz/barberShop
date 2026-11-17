@@ -14,8 +14,8 @@ class BarberShopController extends Controller
      */
     public function index()
     {
-        $barbershops=BarberShop::all();
-        return view('barbershop.index',['barbershops'=>$barbershops]);
+        $barbershops = BarberShop::latest()->paginate(10);
+    return view('barbershop.index', compact('barbershops'));
 
     }
 

@@ -57,6 +57,9 @@
                 @endforeach
             </tbody>
         </table>
+        <div class="d-flex justify-content-center">
+            {{ $barbershops->links() }}
+        </div>
     </div>
 </div>
 @endsection
