@@ -57,7 +57,7 @@
                 @endforeach
             </tbody>
         </table>
-        <div class="mt-3">
+        <div class="d-flex justify-content-center">
             {{ $barbershops->links() }}
         </div>
     </div>
