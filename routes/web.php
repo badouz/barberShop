@@ -40,6 +40,7 @@ Route::middleware('auth')->group(function () {
 
 // BarberShop CRUD routes
 Route::middleware('auth')->group(function () {
+    Route::get('/barbershop', [BarberShopController::class, "index"])->name("barbershop");
     Route::resource('/barbershop', BarberShopController::class);
 });
 
