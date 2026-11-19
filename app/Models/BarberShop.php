@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class BarberShop extends Model
-{
-    protected $table = 'barbershops';
+    {
+    protected $table="barbershops";
 
     protected $fillable = [
         'name',
@@ -16,7 +16,7 @@ class BarberShop extends Model
         'city',
         'zip',
         'latitude',
-        'longitude',
+        'Longitude',
         'user_id',
     ];
     protected $table="barbershops";

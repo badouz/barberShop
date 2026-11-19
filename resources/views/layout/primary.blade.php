@@ -208,6 +208,16 @@
               </a>
             </li>
             <li class="nav-item">
+              <a class="nav-link" href="{{ route('barbershop.index') }}">
+                <span class="menu-title">Barbershops</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ route('barbershop-images.index') }}">
+                <span class="menu-title">Image Gallery</span>
+              </a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
                 <span class="menu-title">Basic UI Elements</span>
                 <i class="menu-arrow"></i>

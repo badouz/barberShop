@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class BarberShopsImage extends Model
 {
     protected $table = 'barbershopsimages';
-
+    
     protected $fillable = [
         'path',
         'is_primary',

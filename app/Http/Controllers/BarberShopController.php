@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\rc;
+
 use Illuminate\Http\Request;
 use App\Models\BarberShop;
+use Illuminate\Support\Facades\Schema;
 
 class BarberShopController extends Controller
 {
@@ -13,7 +14,9 @@ class BarberShopController extends Controller
      */
     public function index()
     {
-        return view('welcome');
+        $barbershops = BarberShop::latest()->paginate(10);
+    return view('barbershop.index', compact('barbershops'));
+
     }
 
     /**
@@ -21,7 +24,7 @@ class BarberShopController extends Controller
      */
     public function create()
     {
-        return view('auth.register');
+        return view('barbershop.create');
     }
 
     /**
@@ -29,61 +32,59 @@ class BarberShopController extends Controller
      */
     public function store(Request $request)
     {
-        $validation = $request->validate([
-            'name' => ['required'],
-            'phone' => ['required'],
-            'city' => ['required'],
-            'address' => ['required'],
-            'zip' => ['required'],
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+        $data = $request->validate([
+            'name' => 'required',
+            'city' => 'required',
+            'address' => 'required',
+            'zip' => 'required',
+            'latitude' => 'required',
+            'Longitude' => 'required',
         ]);
-        BarberShop::create($validation);
-        return redirect()->route('index');
+        $data['user_id'] = auth()->id();
+        BarberShop::create($data);
+        return redirect()->route('barbershop.index');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(rc $rc)
+    public function show(BarberShop $barbershop)
     {
-        //
-        return view('auth.show',['rc'=>$rc]);
+        return view('barbershop.show',['barbershop'=>$barbershop]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(rc $rc)
+    public function edit(BarberShop $barbershop)
     {
-        return view('auth.edit',['rc'=>$rc]);
+        return view('barbershop.edit',['barbershop'=>$barbershop]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, rc $rc)
+    public function update(Request $request, BarberShop $barbershop)
     {
 
-        $validation = $request->validate([
-            'name' => ['required'],
-            'phone' => ['required'],
-            'city' => ['required'],
-            'address' => ['required'],
-            'zip' => ['required'],
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+        $data = $request->validate([
+            'name' => 'required',
+            'city' => 'required',
+            'address' => 'required',
+            'zip' => 'required',
+            'latitude' => 'required',
+            'Longitude' => 'required',
         ]);
-        $rc->update($validation);
-        return redirect()->route('index');
+        $barbershop->update($data);
+        return redirect()->route('barbershop.index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(rc $rc)
+    public function destroy(BarberShop $barbershop)
     {
-        $rc->delete();
-        return redirect()->route('index');
+        $barbershop->delete();
+        return redirect()->route('barbershop.index');
     }
 }

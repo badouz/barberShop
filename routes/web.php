@@ -12,6 +12,8 @@ Route::post('/login',[AuthController::class,"authenticate"])->name("authenticate
 Route::get('/register',[AuthController::class,"showRegisterForm"])->name("showRegisterForm");
 Route::post('/register',[AuthController::class,"register"])->name("register");
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\BarberShopController;
+use App\Http\Controllers\BarberShopsImagesController;
 
 // Public routes
 Route::get('/', function () {
@@ -49,4 +51,21 @@ Route::middleware('auth')->group(function () {
     Route::resource('services', ServiceController::class);
     Route::delete('/services/images/{image}', [ServiceController::class, 'deleteImage'])->name('services.images.destroy');
     Route::patch('/services/images/{image}/primary', [ServiceController::class, 'setPrimaryImage'])->name('services.images.primary');
+});
+
+// BarberShop CRUD routes
+Route::middleware('auth')->group(function () {
+    Route::get('/barbershop', [BarberShopController::class, "index"])->name("barbershop");
+    Route::resource('/barbershop', BarberShopController::class);
+});
+
+// BarberShopsImages CRUD routes
+Route::middleware('auth')->group(function () {
+    Route::get('/barbershop-images',                       [BarberShopsImagesController::class, 'index'])->name('barbershop-images.index');
+    Route::get('/barbershop-images/create',                [BarberShopsImagesController::class, 'create'])->name('barbershop-images.create');
+    Route::post('/barbershop-images',                      [BarberShopsImagesController::class, 'store'])->name('barbershop-images.store');
+    Route::get('/barbershop-images/{barberShopsImage}',    [BarberShopsImagesController::class, 'show'])->name('barbershop-images.show');
+    Route::get('/barbershop-images/{barberShopsImage}/edit', [BarberShopsImagesController::class, 'edit'])->name('barbershop-images.edit');
+    Route::post('/barbershop-images/{barberShopsImage}',   [BarberShopsImagesController::class, 'update'])->name('barbershop-images.update');
+    Route::delete('/barbershop-images/{barberShopsImage}', [BarberShopsImagesController::class, 'destroy'])->name('barbershop-images.destroy');
 });
