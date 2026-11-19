@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\BarberMan;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 
@@ -21,7 +23,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
         Paginator::useBootstrapFive();
+
+        Route::model('barberman', BarberMan::class);
     }
 }
