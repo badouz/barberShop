@@ -226,7 +226,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link {{ request()->routeIs('barbershop-images.*') ? 'active' : '' }}" href="{{ route('barbershop-images.index') }}">
+              <a class="nav-link {{ request()->routeIs('shop-images.*') ? 'active' : '' }}" href="{{ route('shop-images.index') }}">
                 <span class="menu-title">Shop Images</span>
                 <i class="mdi mdi-image-multiple menu-icon"></i>
               </a>
