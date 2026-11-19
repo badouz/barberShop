@@ -17,7 +17,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('barbershop-images.update', $barberShopsImage->id) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('shop-images.update', $barberShopsImage->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <div class="form-group mb-3">
@@ -61,7 +61,7 @@
 
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-gradient-warning">Update</button>
-                    <a href="{{ route('barbershop-images.index') }}" class="btn btn-outline-secondary">Cancel</a>
+                    <a href="{{ route('shop-images.index') }}" class="btn btn-outline-secondary">Cancel</a>
                 </div>
             </form>
         </div>

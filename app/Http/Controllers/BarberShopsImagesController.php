@@ -48,7 +48,7 @@ class BarberShopsImagesController extends Controller
             'barbershop_id' => $validated['barbershop_id'],
         ]);
 
-        return redirect()->route('barbershop-images.index')
+        return redirect()->route('shop-images.index')
                          ->with('success', 'Image uploaded successfully!');
     }
 
@@ -92,7 +92,7 @@ class BarberShopsImagesController extends Controller
         $barberShopsImage->is_primary = $request->boolean('is_primary');
         $barberShopsImage->save();
 
-        return redirect()->route('barbershop-images.index')
+        return redirect()->route('shop-images.index')
                          ->with('success', 'Image updated successfully!');
     }
 
@@ -106,7 +106,7 @@ class BarberShopsImagesController extends Controller
 
         $barberShopsImage->delete();
 
-        return redirect()->route('barbershop-images.index')
+        return redirect()->route('shop-images.index')
                          ->with('success', 'Image deleted successfully!');
     }
 }

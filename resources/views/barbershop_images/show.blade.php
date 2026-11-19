@@ -7,7 +7,7 @@
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h4 class="card-title">Image Details</h4>
-                <a href="{{ route('barbershop-images.index') }}" class="btn btn-outline-secondary btn-sm">
+                <a href="{{ route('shop-images.index') }}" class="btn btn-outline-secondary btn-sm">
                     <i class="mdi mdi-arrow-left"></i> Back
                 </a>
             </div>
@@ -51,11 +51,11 @@
             </table>
 
             <div class="d-flex gap-2 mt-3">
-                <a href="{{ route('barbershop-images.edit', $barberShopsImage->id) }}"
+                <a href="{{ route('shop-images.edit', $barberShopsImage->id) }}"
                    class="btn btn-gradient-warning">
                     <i class="mdi mdi-pencil"></i> Edit
                 </a>
-                <form action="{{ route('barbershop-images.destroy', $barberShopsImage->id) }}" method="POST"
+                <form action="{{ route('shop-images.destroy', $barberShopsImage->id) }}" method="POST"
                       onsubmit="return confirm('Delete this image?')">
                     @csrf
                     @method('DELETE')

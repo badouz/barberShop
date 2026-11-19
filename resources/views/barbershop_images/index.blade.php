@@ -7,7 +7,7 @@
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h4 class="card-title">Barbershop Images</h4>
-                <a href="{{ route('barbershop-images.create') }}" class="btn btn-gradient-primary btn-sm">
+                <a href="{{ route('shop-images.create') }}" class="btn btn-gradient-primary btn-sm">
                     <i class="mdi mdi-plus"></i> Add Image
                 </a>
             </div>
@@ -20,7 +20,7 @@
             @endif
 
             @if($images->isEmpty())
-                <p class="text-muted text-center py-4">No images found. <a href="{{ route('barbershop-images.create') }}">Upload the first one!</a></p>
+                <p class="text-muted text-center py-4">No images found. <a href="{{ route('shop-images.create') }}">Upload the first one!</a></p>
             @else
                 <div class="row">
                     @foreach($images as $image)
@@ -41,13 +41,13 @@
                                     @endif
                                 </div>
                                 <div class="card-footer p-2 d-flex gap-1">
-                                    <a href="{{ route('barbershop-images.show', $image->id) }}" class="btn btn-sm btn-outline-info flex-fill">
+                                    <a href="{{ route('shop-images.show', $image->id) }}" class="btn btn-sm btn-outline-info flex-fill">
                                         <i class="mdi mdi-eye"></i>
                                     </a>
-                                    <a href="{{ route('barbershop-images.edit', $image->id) }}" class="btn btn-sm btn-outline-warning flex-fill">
+                                    <a href="{{ route('shop-images.edit', $image->id) }}" class="btn btn-sm btn-outline-warning flex-fill">
                                         <i class="mdi mdi-pencil"></i>
                                     </a>
-                                    <form action="{{ route('barbershop-images.destroy', $image->id) }}" method="POST"
+                                    <form action="{{ route('shop-images.destroy', $image->id) }}" method="POST"
                                           onsubmit="return confirm('Delete this image?')" class="flex-fill">
                                         @csrf
                                         @method('DELETE')

@@ -20,6 +20,7 @@ class BarberShop extends Model
         'user_id',
     ];
 
+
     public function barberMen(): HasMany
     {
         return $this->hasMany(BarberMan::class, 'barbershop_id', 'id');
