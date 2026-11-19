@@ -6,7 +6,7 @@
 <h2 class="mb-4 fw-bold text-dark">Ajouter un produit</h2>
 
 <div class="card-custom">
-    <form method="POST" action="{{ route('products.store') }}">
+    <form method="POST" action="{{ route('services.store') }}">
         @csrf
 
         <div class="mb-3">
@@ -34,7 +34,7 @@
         </div>
 
         <button type="submit" class="btn btn-purple px-4">Enregistrer</button>
-        <a href="{{ route('products.index') }}" class="btn btn-light border ms-2">Annuler</a>
+        <a href="{{ route('services.index') }}" class="btn btn-light border ms-2">Annuler</a>
     </form>
 </div>
 @endsection

@@ -37,17 +37,17 @@
                     <td>{{ $barbershop->latitude }}</td>
                     <td>{{ $barbershop->Longitude }}</td>
                     <td>
-                        <a href="{{ route('auth.show', ['barbershop' => $barbershop->id]) }}" class="text-decoration-none" style="color: #9a55ff;">
+                        <a href="{{ route('barbershop.show', ['barbershop' => $barbershop->id]) }}" class="text-decoration-none" style="color: #9a55ff;">
                             Afficher
                         </a>
                     </td>
                     <td>
-                        <a href="{{ route('auth.edit', ['barbershop' => $barbershop->id]) }}" class="text-decoration-none text-primary">
+                        <a href="{{ route('barbershop.edit', ['barbershop' => $barbershop->id]) }}" class="text-decoration-none text-primary">
                             modifier
                         </a>
                     </td>
                     <td>
-                        <form method="POST" action="{{ route('auth.destroy', ['barbershop' => $barbershop->id]) }}">
+                        <form method="POST" action="{{ route('barbershop.destroy', ['barbershop' => $barbershop->id]) }}">
                             @csrf
                             @method("DELETE")
                             <button type="submit" class="btn btn-sm btn-light border">delete</button>

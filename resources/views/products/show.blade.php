@@ -6,8 +6,8 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold text-dark mb-0">Détails du produit</h2>
     <div>
-        <a href="{{ route('products.edit', $product) }}" class="btn btn-purple px-4">Modifier</a>
-        <a href="{{ route('products.index') }}" class="btn btn-light border ms-2">Retour</a>
+        <a href="{{ route('services.edit', $product) }}" class="btn btn-purple px-4">Modifier</a>
+        <a href="{{ route('services.index') }}" class="btn btn-light border ms-2">Retour</a>
     </div>
 </div>
 

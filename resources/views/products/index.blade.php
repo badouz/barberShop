@@ -5,7 +5,7 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold text-dark mb-0">Produits</h2>
-    <a href="{{ route('products.create') }}" class="btn btn-purple px-4">Ajouter un produit</a>
+    <a href="{{ route('services.create') }}" class="btn btn-purple px-4">Ajouter un produit</a>
 </div>
 
 @if (session('success'))
@@ -30,9 +30,9 @@
                         <td>{{ $product->description }}</td>
                         <td>{{ number_format((float) $product->price, 2) }}</td>
                         <td class="text-nowrap">
-                            <a href="{{ route('products.show', $product) }}" class="btn btn-sm btn-light border">Afficher</a>
-                            <a href="{{ route('products.edit', $product) }}" class="btn btn-sm btn-light border">Modifier</a>
-                            <form method="POST" action="{{ route('products.destroy', $product) }}" class="d-inline">
+                            <a href="{{ route('services.show', $product) }}" class="btn btn-sm btn-light border">Afficher</a>
+                            <a href="{{ route('services.edit', $product) }}" class="btn btn-sm btn-light border">Modifier</a>
+                            <form method="POST" action="{{ route('services.destroy', $product) }}" class="d-inline">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-outline-danger">Supprimer</button>

@@ -89,7 +89,7 @@
     <main class="page">
         <header class="topbar">
             <div class="brand">💈 BARBER<span>CHOP</span></div>
-            <a class="link" href="{{ route('index') }}">← Accueil</a>
+            <a class="link" href="{{ route('reservation.index') }}">← Accueil</a>
         </header>
 
         @if(session('success'))

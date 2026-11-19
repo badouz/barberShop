@@ -1,71 +1,60 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarberManController;
-use App\Http\Controllers\DashBoardController;
-use App\Http\Controllers\BarberShopController;
-use App\Http\Controllers\ReservationController;
-// guest route 
-Route::get('/login',[AuthController::class,"auth"])->name("login");
-Route::post('/login',[AuthController::class,"authenticate"])->name("authenticate");
-Route::get('/register',[AuthController::class,"showRegisterForm"])->name("showRegisterForm");
-Route::post('/register',[AuthController::class,"register"])->name("register");
-use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\BarberShopController;
 use App\Http\Controllers\BarberShopsImagesController;
+use App\Http\Controllers\DashBoardController;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
 
-// Public routes
+// Public entry point.
 Route::get('/', function () {
-    return redirect()->route('login');
-});
+    return view('welcome');
+})->name('index');
 
-Route::resource('barber-men', BarberManController::class)
-->middleware('auth');
-
-Route::post('/logout',[AuthController::class,"logout"])
-->name("logout")
-->middleware("auth");
-
-Route::resource('/',BarberShopController::class);
-
-Route::get('/services', [ReservationController::class, 'services'])->name('reservation.services');
-Route::post('/mes-reservations', [ReservationController::class, 'selectServices'])->name('reservation.selection');
+// Public service catalog used by the landing page and reservation flow.
+Route::get('/reservation/services', [ReservationController::class, 'services'])
+    ->name('reservation.services');
+Route::post('/mes-reservations', [ReservationController::class, 'selectServices'])
+    ->name('reservation.selection');
 Route::get('/mes-reservations', [ReservationController::class, 'index'])->name('reservation.index');
-Route::get('/reservation', fn () => redirect()->route('reservation.index'))->name('reservation.create');
+Route::get('/reservation', fn () => redirect()->route('reservation.index'))
+    ->name('reservation.create');
 Route::post('/reservation', [ReservationController::class, 'store'])->name('reservation.store');
-// Guest routes 
+
+// Authentication routes for guests.
 Route::middleware('guest')->group(function () {
-    Route::get('/login', [AuthController::class, "auth"])->name("login");
-    Route::post('/login', [AuthController::class, "authenticate"])->name("authenticate");
-    Route::get('/register', [AuthController::class, "showRegisterForm"])->name("showRegisterForm");
-    Route::post('/register', [AuthController::class, "register"])->name("register");
+    Route::get('/login', [AuthController::class, 'auth'])->name('login');
+    Route::post('/login', [AuthController::class, 'authenticate'])->name('authenticate');
+    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('showRegisterForm');
+    Route::post('/register', [AuthController::class, 'register'])->name('register');
 });
 
-// Authenticated routes
+// Routes available to authenticated users.
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', [DashBoardController::class, "index"])->name("dashboard");
-    Route::post('/logout', [AuthController::class, "logout"])->name("logout");
+    // Dashboard and session.
+    Route::get('/dashboard', [DashBoardController::class, 'index'])->name('dashboard');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // Services CRUD & Image management
-    Route::resource('services', ServiceController::class);
-    Route::delete('/services/images/{image}', [ServiceController::class, 'deleteImage'])->name('services.images.destroy');
-    Route::patch('/services/images/{image}/primary', [ServiceController::class, 'setPrimaryImage'])->name('services.images.primary');
-});
-
-// BarberShop CRUD routes
-Route::middleware('auth')->group(function () {
-    Route::get('/barbershop', [BarberShopController::class, "index"])->name("barbershop");
+    // Management resources.
+    Route::resource('/barbermen', BarberManController::class);
     Route::resource('/barbershop', BarberShopController::class);
-});
+    Route::resource('/services', ServiceController::class);
+    Route::resource('/users', UserController::class);
 
-// BarberShopsImages CRUD routes
-Route::middleware('auth')->group(function () {
-    Route::get('/barbershop-images',                       [BarberShopsImagesController::class, 'index'])->name('barbershop-images.index');
-    Route::get('/barbershop-images/create',                [BarberShopsImagesController::class, 'create'])->name('barbershop-images.create');
-    Route::post('/barbershop-images',                      [BarberShopsImagesController::class, 'store'])->name('barbershop-images.store');
-    Route::get('/barbershop-images/{barberShopsImage}',    [BarberShopsImagesController::class, 'show'])->name('barbershop-images.show');
-    Route::get('/barbershop-images/{barberShopsImage}/edit', [BarberShopsImagesController::class, 'edit'])->name('barbershop-images.edit');
-    Route::post('/barbershop-images/{barberShopsImage}',   [BarberShopsImagesController::class, 'update'])->name('barbershop-images.update');
-    Route::delete('/barbershop-images/{barberShopsImage}', [BarberShopsImagesController::class, 'destroy'])->name('barbershop-images.destroy');
+    // Service image management.
+    Route::delete('/services/images/{image}', [ServiceController::class, 'deleteImage'])
+        ->name('services.images.destroy');
+    Route::patch('/services/images/{image}/primary', [ServiceController::class, 'setPrimaryImage'])
+        ->name('services.images.primary');
+
+    // Barber shop image management.
+    Route::resource('/barbershop-images', BarberShopsImagesController::class)
+        ->parameters(['barbershop-images' => 'barberShopsImage'])
+        ->except(['update']);
+    Route::post('/barbershop-images/{barberShopsImage}', [BarberShopsImagesController::class, 'update'])
+        ->name('barbershop-images.update');
 });

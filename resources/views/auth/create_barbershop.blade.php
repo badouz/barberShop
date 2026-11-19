@@ -9,7 +9,7 @@
     <h5 class="fw-bold mb-1">Default Form</h5>
     <p class="text-muted small mb-4">Basic form layout</p>
 
-    <form method="POST" action="{{ route('users.store') }}">
+    <form method="POST" action="{{ route('barbershop.store') }}">
         @csrf
 
         <div class="mb-3">
