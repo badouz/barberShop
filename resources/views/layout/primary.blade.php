@@ -207,14 +207,16 @@
                 <i class="mdi mdi-content-cut menu-icon"></i>
               </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item {{ request()->routeIs('barbershop.*') ? 'active' : '' }}">
               <a class="nav-link" href="{{ route('barbershop.index') }}">
                 <span class="menu-title">Barbershops</span>
+                <i class="mdi mdi-store menu-icon"></i>
               </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item {{ request()->routeIs('barbershop-images.*') ? 'active' : '' }}">
               <a class="nav-link" href="{{ route('barbershop-images.index') }}">
                 <span class="menu-title">Image Gallery</span>
+                <i class="mdi mdi-image-multiple menu-icon"></i>
               </a>
             </li>
             <li class="nav-item">

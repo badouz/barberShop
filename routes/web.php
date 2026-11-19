@@ -46,7 +46,7 @@ Route::middleware('auth')->group(function () {
 
 // BarberShopsImages CRUD routes
 Route::middleware('auth')->group(function () {
-    Route::get('/barbershop-images',                       [BarberShopsImagesController::class, 'index'])->name('barbershop-images.index');
+    Route::get('/Gallery',                       [BarberShopsImagesController::class, 'index'])->name('barbershop-images.index');
     Route::get('/barbershop-images/create',                [BarberShopsImagesController::class, 'create'])->name('barbershop-images.create');
     Route::post('/barbershop-images',                      [BarberShopsImagesController::class, 'store'])->name('barbershop-images.store');
     Route::get('/barbershop-images/{barberShopsImage}',    [BarberShopsImagesController::class, 'show'])->name('barbershop-images.show');
