@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
 use Illuminate\Http\Request;
 use App\Models\BarberShop;
 use Illuminate\Support\Facades\Schema;
@@ -15,8 +14,7 @@ class BarberShopController extends Controller
     public function index()
     {
         $barbershops = BarberShop::latest()->paginate(10);
-    return view('barbershop.index', compact('barbershops'));
-
+        return view('barbershop.index', compact('barbershops'));
     }
 
     /**
@@ -33,16 +31,17 @@ class BarberShopController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required',
-            'city' => 'required',
-            'address' => 'required',
-            'zip' => 'required',
-            'latitude' => 'required',
-            'Longitude' => 'required',
+            'name' => ['required', 'string', 'max:255'],
+            'city' => ['required', 'string', 'max:100'],
+            'address' => ['required', 'string', 'max:255'],
+            'zip' => ['required', 'string', 'max:20'],
+            'latitude' => ['required', 'numeric', 'between:-90,90'],
+            'Longitude' => ['required', 'numeric', 'between:-180,180'],
         ]);
+
         $data['user_id'] = auth()->id();
         BarberShop::create($data);
-        return redirect()->route('barbershop.index');
+        return redirect()->route('barbershop.index')->with('success', 'Barbershop créé avec succès!');
     }
 
     /**
@@ -50,7 +49,7 @@ class BarberShopController extends Controller
      */
     public function show(BarberShop $barbershop)
     {
-        return view('barbershop.show',['barbershop'=>$barbershop]);
+        return view('barbershop.show', ['barbershop' => $barbershop]);
     }
 
     /**
@@ -58,7 +57,7 @@ class BarberShopController extends Controller
      */
     public function edit(BarberShop $barbershop)
     {
-        return view('barbershop.edit',['barbershop'=>$barbershop]);
+        return view('barbershop.edit', ['barbershop' => $barbershop]);
     }
 
     /**
@@ -66,17 +65,17 @@ class BarberShopController extends Controller
      */
     public function update(Request $request, BarberShop $barbershop)
     {
-
         $data = $request->validate([
-            'name' => 'required',
-            'city' => 'required',
-            'address' => 'required',
-            'zip' => 'required',
-            'latitude' => 'required',
-            'Longitude' => 'required',
+            'name' => ['required', 'string', 'max:255'],
+            'city' => ['required', 'string', 'max:100'],
+            'address' => ['required', 'string', 'max:255'],
+            'zip' => ['required', 'string', 'max:20'],
+            'latitude' => ['required', 'numeric', 'between:-90,90'],
+            'Longitude' => ['required', 'numeric', 'between:-180,180'],
         ]);
+
         $barbershop->update($data);
-        return redirect()->route('barbershop.index');
+        return redirect()->route('barbershop.index')->with('success', 'Barbershop mis à jour avec succès!');
     }
 
     /**
@@ -85,6 +84,6 @@ class BarberShopController extends Controller
     public function destroy(BarberShop $barbershop)
     {
         $barbershop->delete();
-        return redirect()->route('barbershop.index');
+        return redirect()->route('barbershop.index')->with('success', 'Barbershop supprimé avec succès!');
     }
 }
