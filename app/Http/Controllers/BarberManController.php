@@ -6,6 +6,7 @@ use Illuminate\Database\QueryException;
 use App\Models\BarberMan;
 use App\Models\BarberShop;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BarberManController extends Controller
 {

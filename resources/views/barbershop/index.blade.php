@@ -25,6 +25,7 @@
                     <th>afficher</th>
                     <th>modifier</th>
                     <th>supprimer</th>
+                    <th>Services</th>
                 </tr>
             </thead>
             <tbody>
@@ -52,6 +53,11 @@
                             @method("DELETE")
                             <button type="submit" class="btn btn-sm btn-light border">delete</button>
                         </form>
+                    </td>
+                    <td>
+                        <a href="{{ route('bareberservice', ['id' => $barbershop->id]) }}" class="text-decoration-none text-primary">
+                            Services
+                        </a>
                     </td>
                 </tr>
                 @endforeach

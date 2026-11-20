@@ -213,12 +213,14 @@
                 <i class="mdi mdi-account-tie menu-icon"></i>
               </a>
             </li>
+            @if(auth::user()->isAdmin())
             <li class="nav-item">
               <a class="nav-link {{ request()->routeIs('services.*') ? 'active' : '' }}" href="{{ route('services.index') }}">
                 <span class="menu-title">Services</span>
                 <i class="mdi mdi-content-cut menu-icon"></i>
               </a>
             </li>
+            @endif
             <li class="nav-item">
               <a class="nav-link {{ request()->routeIs('barbershop.*') ? 'active' : '' }}" href="{{ route('barbershop.index') }}">
                 <span class="menu-title">Barbershops</span>

@@ -14,12 +14,21 @@ class ServiceController extends Controller
     /**
      * Display a listing of services.
      */
-    public function index()
+    public function index($id=0)
     {
-        // Load services with their barbershop and images
-        $services = Service::with(['barberShop', 'serviceImages', 'primaryImage'])
-            ->latest()
-            ->paginate(10);
+        if(Auth::user()->isAdmin()){
+            $services = Service::with(['barberShop', 'serviceImages', 'primaryImage'])
+                        ->latest()
+                        ->paginate(10);
+        }
+        if(Auth::user()->isBarberShop()){
+
+            Auth::user()->barberShops()->findOrFail($id);
+            $services = BarberShop::find($id)->services()->latest()
+                        ->paginate(10);
+             
+
+        }
 
         return view('services.index', compact('services'));
     }
@@ -28,16 +37,25 @@ class ServiceController extends Controller
      * Show the form for creating a new service.
      */
     public function create()
-    {
-        $barbershops = BarberShop::all();
-        return view('services.create', compact('barbershops'));
-    }
+{
+    $user = auth()->user();
+
+    $barbershops = $user->isAdmin()
+        ? BarberShop::all()
+        : $user->barberShops;   
+
+    return view('services.create', compact('barbershops'));
+}
 
     /**
      * Store a newly created service in storage.
      */
     public function store(Request $request)
-    {
+    {   
+        $barbershop = BarberShop::findOrFail($request->barbershop_id);
+        if (!auth()->user()->isAdmin() && $barbershop->user_id !== auth()->id()) {
+        abort(403);
+        }
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'price' => ['required', 'numeric', 'min:0'],
@@ -66,7 +84,7 @@ class ServiceController extends Controller
             }
         }
 
-        return redirect()->route('services.index')->with('success', 'Service created successfully!');
+        return redirect()->route('bareberservice', ['id' => $service->barbershop_id])->with('success', 'Service created successfully!');
     }
 
     /**
@@ -84,15 +102,27 @@ class ServiceController extends Controller
     public function edit(Service $service)
     {
         $service->load(['serviceImages', 'barberShop']);
-        $barbershops = BarberShop::all();
-        return view('services.edit', compact('service', 'barbershops'));
+        $user = auth()->user();
+
+    $barbershops = $user->isAdmin()
+        ? BarberShop::all()
+        : $user->barberShops;
+
+    return view('services.edit', compact('service', 'barbershops'));
     }
 
     /**
      * Update the specified service in storage.
      */
     public function update(Request $request, Service $service)
-    {
+    {   
+        $barbershop = BarberShop::findOrFail($request->barbershop_id);
+        if (!auth()->user()->isAdmin() && $barbershop->user_id !== auth()->id()) {
+        abort(403);
+        }
+        $barbershop = BarberShop::findOrFail($request->barbershop_id);
+
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'price' => ['required', 'numeric', 'min:0'],
@@ -122,7 +152,7 @@ class ServiceController extends Controller
             }
         }
 
-        return redirect()->route('services.index')->with('success', 'Service updated successfully!');
+        return redirect()->route('bareberservice', ['id' => $service->barbershop_id])->with('success', 'Service updated successfully!');
     }
 
     /**
@@ -137,9 +167,10 @@ class ServiceController extends Controller
             $image->delete();
         }
 
+        $barbershopId = $service->barbershop_id;
         $service->delete();
 
-        return redirect()->route('services.index')->with('success', 'Service deleted successfully!');
+        return redirect()->route('bareberservice', ['id' => $barbershopId])->with('success', 'Service deleted successfully!');
     }
 
     /**

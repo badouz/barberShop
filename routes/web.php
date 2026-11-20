@@ -49,7 +49,7 @@ Route::middleware('auth')->group(function () {
         ->name('admin.reservations.status');
     Route::delete('/admin/reservations/{reservation}', [AdminReservationController::class, 'destroy'])
         ->name('admin.reservations.destroy');
-
+    Route::get('/barbershop/{id?}/service', [ServiceController::class,'index'])->name("bareberservice");
     // Management resources.
     Route::resource('/barbermen', BarberManController::class);
     Route::resource('/barbershop', BarberShopController::class);
