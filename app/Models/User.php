@@ -14,6 +14,8 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    public const ADMIN="ADMIN";
+    public const BARBER_SHOP="BARBERSHOP";
     /**
      * The attributes that are mass assignable.
      *
@@ -49,6 +51,12 @@ class User extends Authenticatable
         return $this->hasMany(Reservation::class, 'user_id', 'id');
     }
 
+    public function isAdmin(){
+        return $this->role === self::ADMIN;
+    }
+      public function isBarberShop(){
+        return $this->role === self::BARBER_SHOP;
+    }
     /**
      * Get the attributes that should be cast.
      *

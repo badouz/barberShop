@@ -14,12 +14,23 @@ class ServiceController extends Controller
     /**
      * Display a listing of services.
      */
-    public function index()
+    public function index($id=0)
     {
+        if(Auth::user()->isAdmin()){
+            $services = Service::with(['barberShop', 'serviceImages', 'primaryImage'])
+                        ->latest()
+                        ->paginate(10);
+        }
+        if(Auth::user()->isBarberShop()){
+
+            Auth::user()->barberShops()->findOrFail($id);
+            $services = BarberShop::find($id)->services()->latest()
+                        ->paginate(10);
+             
+
+        }
         // Load services with their barbershop and images
-        $services = Service::with(['barberShop', 'serviceImages', 'primaryImage'])
-            ->latest()
-            ->paginate(10);
+       
 
         return view('services.index', compact('services'));
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\BarberShop;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Auth;
 
 class BarberShopController extends Controller
 {
@@ -13,7 +14,15 @@ class BarberShopController extends Controller
      */
     public function index()
     {
+
+    if(Auth::user()->isAdmin()){
         $barbershops = BarberShop::latest()->paginate(10);
+    }
+
+    if(Auth::user()->isBarberShop()){
+        $barbershops = Auth::user()->barberShops()->paginate(10);
+    }
+        
         return view('barbershop.index', compact('barbershops'));
     }
 

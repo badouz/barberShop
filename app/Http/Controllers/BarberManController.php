@@ -6,12 +6,15 @@ use Illuminate\Database\QueryException;
 use App\Models\BarberMan;
 use App\Models\BarberShop;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BarberManController extends Controller
 {
     public function index()
     {
+        
         $barberMen = BarberMan::with('barberShop')->paginate(10);
+
         return view('barbermen.index', compact('barberMen'));
     }
 
