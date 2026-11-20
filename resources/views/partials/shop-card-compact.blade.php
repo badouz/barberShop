@@ -6,7 +6,7 @@
          data-location="{{ strtolower($shop['location']) }}" 
          data-category="{{ implode(' ', $shop['categories']) }}"
          aria-labelledby="compact-title-{{ $shop['id'] }}">
-    <a href="{{ route('client.shop', $shop['id']) }}" class="compact-image-wrapper" style="display:block;">
+    <a href="{{ route('reservation.services', ['shop_id' => $shop['id']]) }}" class="compact-image-wrapper" style="display:block;">
         <img src="{{ $shop['image'] }}" 
              alt="{{ $shop['name'] }}" 
              class="compact-image" 
@@ -16,7 +16,7 @@
     <div class="compact-content">
         <div class="compact-top">
             <h3 id="compact-title-{{ $shop['id'] }}" class="compact-title">
-                <a href="{{ route('client.shop', $shop['id']) }}" style="color:inherit; text-decoration:none;">{{ $shop['name'] }}</a>
+                <a href="{{ route('reservation.services', ['shop_id' => $shop['id']]) }}" style="color:inherit; text-decoration:none;">{{ $shop['name'] }}</a>
             </h3>
             <div class="shop-rating" aria-label="Rating: {{ $shop['rating'] }} out of 5 stars">
                 <span class="star-icon" aria-hidden="true" style="color:#f59e0b;">★</span>
@@ -34,11 +34,16 @@
 
         <div class="compact-bottom">
             <div class="compact-price">
-                <span class="price-label">FROM</span>
-                <strong>${{ $shop['price_from'] }}</strong>
+                @if($shop['price_from'] !== null)
+                    <span class="price-label">DÈS</span>
+                    <strong>{{ $shop['price_from'] }} DH</strong>
+                @else
+                    <span class="price-label">SERVICES</span>
+                    <strong style="font-size:0.8rem; color:var(--text-slate);">0 service</strong>
+                @endif
             </div>
 
-            <a href="{{ route('client.reserve', $shop['id']) }}" 
+            <a href="{{ route('reservation.services', ['shop_id' => $shop['id']]) }}" 
                class="btn-book-secondary" 
                aria-label="Book now at {{ $shop['name'] }}">
                 Book now

@@ -86,7 +86,7 @@ class ReservationFlowTest extends TestCase
             'barberman_id' => $barber->id,
             'date' => $date,
             'time' => '15:00',
-        ])->assertRedirect(route('reservation.index'));
+        ])->assertRedirect();
 
         $reservation = Reservation::firstOrFail();
         $this->assertSame('80', (string) $reservation->price);
@@ -99,8 +99,8 @@ class ReservationFlowTest extends TestCase
             'reservation_id' => $reservation->id,
             'service_id' => $extraService->id,
         ]);
-        $this->get(route('reservation.index'))
+        $this->get(route('reservation.confirmation', $reservation->id))
             ->assertOk()
-            ->assertSee('Votre réservation a été envoyée avec succès.');
+            ->assertSee('Votre réservation est confirmée !');
     }
 }

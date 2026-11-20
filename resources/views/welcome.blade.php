@@ -910,82 +910,9 @@
 <body>
 
     @php
-        // Load database shops if available, otherwise use demo shops matching the capture
-        try {
-            $databaseShops = \App\Models\BarberShop::with(['services', 'barberShopImages'])->get();
-        } catch (\Throwable $e) {
-            $databaseShops = collect();
-        }
-
-        if ($databaseShops->isNotEmpty()) {
-            $shopsList = $databaseShops->map(function ($shop, $index) {
-                $primaryImg = $shop->barberShopImages->firstWhere('is_primary', true) 
-                              ?? $shop->barberShopImages->first();
-                $imgPath = $primaryImg 
-                    ? (str_starts_with($primaryImg->path, 'http') ? $primaryImg->path : asset('storage/' . $primaryImg->path))
-                    : 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=1200&q=85&auto=format&fit=crop';
-                
-                $minPrice = $shop->services->min('price') ?? 30;
-                
-                return [
-                    'id' => $shop->id,
-                    'name' => $shop->name ?: 'The Modern Gentleman',
-                    'rating' => 4.9,
-                    'location' => trim(($shop->address ?: 'SoHo, New York') . ' · ' . ($shop->city ?: '0.8 km away')),
-                    'price_from' => $minPrice,
-                    'image' => $imgPath,
-                    'categories' => ['haircut', 'beard', 'styling'],
-                    'is_featured' => $index === 0,
-                ];
-            });
-        } else {
-            // Demonstration data exactly matching the screenshot
-            $shopsList = collect([
-                [
-                    'id' => 1,
-                    'name' => 'The Modern Gentleman',
-                    'rating' => 4.9,
-                    'location' => 'SoHo, New York · 0.8 km away',
-                    'price_from' => 30,
-                    'image' => 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=1200&q=85&auto=format&fit=crop',
-                    'categories' => ['haircut', 'beard', 'styling'],
-                    'is_featured' => true,
-                ],
-                [
-                    'id' => 2,
-                    'name' => 'Northside Barber Co.',
-                    'rating' => 4.8,
-                    'location' => 'Williamsburg, Brooklyn · 2.4 km away',
-                    'price_from' => 28,
-                    'image' => 'https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&q=80&auto=format&fit=crop',
-                    'categories' => ['haircut', 'beard'],
-                    'is_featured' => false,
-                ],
-                [
-                    'id' => 3,
-                    'name' => 'Crown & Blade Studio',
-                    'rating' => 4.9,
-                    'location' => 'Greenwich Village, New York · 1.2 km away',
-                    'price_from' => 35,
-                    'image' => 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&q=80&auto=format&fit=crop',
-                    'categories' => ['haircut', 'styling'],
-                    'is_featured' => false,
-                ],
-                [
-                    'id' => 4,
-                    'name' => 'East Side Traditional Barbers',
-                    'rating' => 4.7,
-                    'location' => 'Lower East Side, New York · 1.5 km away',
-                    'price_from' => 25,
-                    'image' => 'https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&q=80&auto=format&fit=crop',
-                    'categories' => ['haircut', 'beard', 'styling'],
-                    'is_featured' => false,
-                ],
-            ]);
-        }
-
-        $featuredShop = $shopsList->firstWhere('is_featured', true) ?? $shopsList->first();
-        $compactShops = $shopsList->reject(fn ($s) => $s['id'] === $featuredShop['id']);
+        $shopsList = $shopsList ?? collect();
+        $featuredShop = $featuredShop ?? ($shopsList->firstWhere('is_featured', true) ?? $shopsList->first());
+        $compactShops = $compactShops ?? ($featuredShop ? $shopsList->reject(fn ($s) => $s['id'] === $featuredShop['id']) : collect());
     @endphp
 
     <!-- ==========================================================================
@@ -1012,29 +939,18 @@
                 <nav class="desktop-nav" aria-label="Main navigation">
                     <a href="{{ route('index') }}" class="desktop-nav-link active">Home</a>
                     <a href="{{ route('reservation.services') }}" class="desktop-nav-link">Reserve</a>
-                    <a href="{{ route('reservation.index') }}" class="desktop-nav-link">My bookings</a>
                     @auth
-                        <a href="{{ route('dashboard') }}" class="desktop-nav-link">Settings</a>
-                    @else
-                        <a href="{{ route('login') }}" class="desktop-nav-link">Settings</a>
+                        <a href="{{ route('dashboard') }}" class="desktop-nav-link">Dashboard</a>
                     @endauth
                 </nav>
 
-                <!-- Actions: User Avatar and Notification Bell -->
+                <!-- Actions -->
                 <div class="header-actions">
-                    <button class="notification-btn" type="button" aria-label="View notifications">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                        </svg>
-                        <span class="notification-badge" aria-hidden="true"></span>
-                    </button>
-
-                    <a href="{{ Auth::check() ? route('dashboard') : route('login') }}" aria-label="User profile">
-                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&h=120&auto=format&fit=crop&crop=faces" 
-                             alt="User avatar" 
-                             class="user-avatar" />
-                    </a>
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="btn-book-secondary" style="padding: 8px 18px; font-size: 13px; text-decoration:none;">Dashboard Purple</a>
+                    @else
+                        <a href="{{ route('login') }}" class="btn-book-secondary" style="padding: 8px 18px; font-size: 13px; text-decoration:none;">Connexion Admin</a>
+                    @endauth
                 </div>
             </div>
         </div>
@@ -1173,6 +1089,11 @@
                     <!-- Featured Salon (approx 60% on laptop) -->
                     @if($featuredShop)
                         @include('partials.shop-card-featured', ['shop' => $featuredShop])
+                    @elseif($shopsList->isEmpty())
+                        <div style="background:#fff; border-radius:18px; padding:48px 24px; text-align:center; border:1px solid var(--border-light); grid-column: 1 / -1; width:100%;">
+                            <h3 style="font-size:1.15rem; font-weight:700; margin-bottom:6px;">Aucun salon disponible</h3>
+                            <p style="color:var(--text-slate); font-size:0.92rem;">Aucun salon n'est encore enregistré dans l'administration.</p>
+                        </div>
                     @endif
 
                     <!-- Compact Salons Stack (approx 40% on laptop) -->
@@ -1210,26 +1131,6 @@
                 <line x1="3" y1="10" x2="21" y2="10"></line>
             </svg>
             <span>Reserve</span>
-        </a>
-
-        <!-- My bookings -->
-        <a href="{{ route('reservation.index') }}" class="nav-item">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-                <line x1="9" y1="12" x2="15" y2="12"></line>
-                <line x1="9" y1="16" x2="15" y2="16"></line>
-            </svg>
-            <span>My bookings</span>
-        </a>
-
-        <!-- Settings -->
-        <a href="{{ Auth::check() ? route('dashboard') : route('login') }}" class="nav-item">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-            <span>Settings</span>
         </a>
     </nav>
 

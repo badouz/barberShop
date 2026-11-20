@@ -202,7 +202,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link {{ request()->routeIs('reservation.*') ? 'active' : '' }}" href="{{ route('reservation.index') }}">
+              <a class="nav-link {{ request()->routeIs('admin.reservations.*') ? 'active' : '' }}" href="{{ route('admin.reservations.index') }}">
                 <span class="menu-title">Reservations</span>
                 <i class="mdi mdi-calendar-check menu-icon"></i>
               </a>

@@ -1,45 +1,32 @@
 <?php
 
+use App\Http\Controllers\AdminReservationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarberManController;
 use App\Http\Controllers\BarberShopController;
 use App\Http\Controllers\BarberShopsImagesController;
-use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashBoardController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-// Public entry point – landing page (no auth required).
-Route::get('/', function () {
-    return view('welcome');
-})->name('index');
+// Public entry point – CHAIR Home.
+Route::get('/', [ReservationController::class, 'home'])->name('index');
 
-// ─── CHAIR Client Area ───────────────────────────────────────────────────────
-Route::prefix('client')->name('client.')->middleware('auth')->group(function () {
-    Route::get('/',                                              [ClientController::class, 'home'])               ->name('home');
-    Route::get('/shop/{shop}',                                   [ClientController::class, 'shop'])               ->name('shop');
-    Route::get('/reserve/{shop}',                                [ClientController::class, 'reserve'])            ->name('reserve');
-    Route::post('/reserve/{shop}',                               [ClientController::class, 'storeReservation'])   ->name('store');
-    Route::get('/booking-success/{reservation}',                 [ClientController::class, 'bookingSuccess'])     ->name('booking-success');
-    Route::get('/bookings',                                      [ClientController::class, 'myBookings'])         ->name('bookings');
-    Route::get('/bookings/{reservation}',                        [ClientController::class, 'reservationDetails']) ->name('booking-detail');
-    Route::patch('/bookings/{reservation}/cancel',               [ClientController::class, 'cancelReservation']) ->name('cancel');
-    Route::patch('/bookings/{reservation}/reschedule',           [ClientController::class, 'reschedule'])         ->name('reschedule');
-    Route::get('/settings',                                      [ClientController::class, 'settings'])           ->name('settings');
-    Route::patch('/settings',                                    [ClientController::class, 'updateSettings'])     ->name('settings.update');
-});
-
-// Public service catalog used by the landing page and reservation flow.
+// Public CHAIR reservation flow (Guest or Authenticated).
 Route::get('/reservation/services', [ReservationController::class, 'services'])
     ->name('reservation.services');
 Route::post('/mes-reservations', [ReservationController::class, 'selectServices'])
     ->name('reservation.selection');
-Route::get('/mes-reservations', [ReservationController::class, 'index'])->name('reservation.index');
-Route::get('/reservation', fn () => redirect()->route('reservation.index'))
+Route::get('/mes-reservations', [ReservationController::class, 'index'])
+    ->name('reservation.index');
+Route::get('/reservation', fn () => redirect()->route('reservation.services'))
     ->name('reservation.create');
-Route::post('/reservation', [ReservationController::class, 'store'])->name('reservation.store');
+Route::post('/reservation', [ReservationController::class, 'store'])
+    ->name('reservation.store');
+Route::get('/reservation/confirmation/{reservation}', [ReservationController::class, 'confirmation'])
+    ->name('reservation.confirmation');
 
 // Authentication routes for guests.
 Route::middleware('guest')->group(function () {
@@ -49,11 +36,19 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->name('register');
 });
 
-// Routes available to authenticated users.
+// Routes available to authenticated users (Purple Admin Dashboard).
 Route::middleware('auth')->group(function () {
     // Dashboard and session.
     Route::get('/dashboard', [DashBoardController::class, 'index'])->name('dashboard');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    // Admin Reservations Management.
+    Route::get('/admin/reservations', [AdminReservationController::class, 'index'])
+        ->name('admin.reservations.index');
+    Route::patch('/admin/reservations/{reservation}/status', [AdminReservationController::class, 'updateStatus'])
+        ->name('admin.reservations.status');
+    Route::delete('/admin/reservations/{reservation}', [AdminReservationController::class, 'destroy'])
+        ->name('admin.reservations.destroy');
 
     // Management resources.
     Route::resource('/barbermen', BarberManController::class);
