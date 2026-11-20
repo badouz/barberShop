@@ -207,12 +207,14 @@
                 <i class="mdi mdi-calendar-check menu-icon"></i>
               </a>
             </li>
+            @if(auth::user()->isAdmin() && auth::user()->isBarberShop())
             <li class="nav-item">
               <a class="nav-link {{ request()->routeIs('barbermen.*') ? 'active' : '' }}" href="{{ route('barbermen.index') }}">
                 <span class="menu-title">Barbers</span>
                 <i class="mdi mdi-account-tie menu-icon"></i>
               </a>
             </li>
+            @endif
       @if(auth::user()->isAdmin())
             <li class="nav-item">
               <a class="nav-link {{ request()->routeIs('services.*') ? 'active' : '' }}" href="{{ route('services.index') }}">

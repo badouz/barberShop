@@ -16,6 +16,7 @@ class User extends Authenticatable
 
     public const ADMIN="ADMIN";
     public const BARBER_SHOP="BARBERSHOP";
+    public const BARBER_MAN="BARBERMAN";
     /**
      * The attributes that are mass assignable.
      *
@@ -56,6 +57,9 @@ class User extends Authenticatable
     }
       public function isBarberShop(){
         return $this->role === self::BARBER_SHOP;
+    }
+    public function isBarberMan(){
+        return $this->role === self::BARBER_MAN;
     }
     /**
      * Get the attributes that should be cast.

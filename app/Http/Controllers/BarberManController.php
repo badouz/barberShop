@@ -12,24 +12,50 @@ class BarberManController extends Controller
 {
     public function index()
     {
-        
-        $barberMen = BarberMan::with('barberShop')->paginate(10);
+        if (Auth::user()->isAdmin()) {
+            $barberMen = BarberMan::with('barberShop')->paginate(10);
+            
+        } elseif (Auth::user()->isBarberShop()) {
+            $shopIds = Auth::user()->barberShops()->pluck('id');
+            $barberMen = BarberMan::with('barberShop')
+                ->whereIn('barbershop_id', $shopIds)
+                ->paginate(10);
+        } else {
+            abort(403);
+        }
 
         return view('barbermen.index', compact('barberMen'));
     }
 
     public function create()
     {
-        $allBarberShops = BarberShop::all();
+        if (Auth::user()->isAdmin()) {
+            $allBarberShops = BarberShop::all();
+        } elseif (Auth::user()->isBarberShop()) {
+            $allBarberShops = Auth::user()->barberShops;
+        } else {
+            abort(403);
+        }
+
         return view('barbermen.create', compact('allBarberShops'));
     }
 
     public function store(Request $request)
     {
+        if (!Auth::user()->isAdmin() && !Auth::user()->isBarberShop()) {
+            abort(403);
+        }
         $validated = $request->validate([
             'name'          => 'required|string|max:255',
             'barbershop_id' => 'required|exists:barbershops,id',
         ]);
+
+        if (Auth::user()->isBarberShop()) {
+            $shop = BarberShop::find($validated['barbershop_id']);
+            if ($shop->user_id !== Auth::id()) {
+                abort(403);
+            }
+        }
 
         BarberMan::create($validated);
 
@@ -44,7 +70,16 @@ class BarberManController extends Controller
 
     public function edit(BarberMan $barberman)
     {
-        $allBarberShops = BarberShop::all();
+        if (Auth::user()->isAdmin()) {
+            $allBarberShops = BarberShop::all();
+        } elseif (Auth::user()->isBarberShop()) {
+            if ($barberman->barberShop->user_id !== Auth::id()) {
+                abort(403);
+            }
+            $allBarberShops = Auth::user()->barberShops;
+        } else {
+            abort(403);
+        }
 
         return view('barbermen.edit', [
             'barberMan'      => $barberman,
@@ -54,10 +89,24 @@ class BarberManController extends Controller
 
     public function update(Request $request, BarberMan $barberman)
     {
+        if (Auth::user()->isBarberShop() && $barberman->barberShop->user_id !== Auth::id()) {
+            abort(403);
+        }
+        if (!Auth::user()->isAdmin() && !Auth::user()->isBarberShop()) {
+            abort(403);
+        }
+
         $validated = $request->validate([
             'name'          => 'required|string|max:255',
             'barbershop_id' => 'required|exists:barbershops,id',
         ]);
+
+        if (Auth::user()->isBarberShop()) {
+            $shop = BarberShop::find($validated['barbershop_id']);
+            if ($shop->user_id !== Auth::id()) {
+                abort(403);
+            }
+        }
 
         $barberman->update($validated);
 
