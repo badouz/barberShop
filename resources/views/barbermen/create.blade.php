@@ -1,38 +1,56 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Add barber</title>
-</head>
-<body>
-    <h1>Add barber</h1>
+@extends("layout.primary")
+@section("title")
+BarberShop - Ajouter un barber
+@endsection
 
-    @if($errors->any())
-        <ul>
+@section("content")
+<div class="col-12 grid-margin stretch-card">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title">Ajouter un barber</h4>
+
+      @if($errors->any())
+        <div class="alert alert-danger">
+          <ul class="mb-0">
             @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
+              <li>{{ $error }}</li>
             @endforeach
-        </ul>
-    @endif
+          </ul>
+        </div>
+      @endif
 
-    <form action="{{ route('barbermen.store') }}" method="POST">
+      <form class="forms-sample" action="{{ route('barbermen.store') }}" method="POST">
         @csrf
 
-        <label>Name</label><br>
-        <input type="text" name="name" value="{{ old('name') }}"><br><br>
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" class="form-control @error('name') is-invalid @enderror"
+                 id="name" name="name" value="{{ old('name') }}" placeholder="Name">
+          @error('name')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
+        </div>
 
-        <label>Barbershop</label><br>
-        <select name="barbershop_id">
-            <option value="">-- choose --</option>
+        <div class="form-group">
+          <label for="barbershop_id">BarberShop</label>
+          <select class="form-select @error('barbershop_id') is-invalid @enderror"
+                  id="barbershop_id" name="barbershop_id">
+            <option value="">-- Choisir --</option>
             @foreach($allBarberShops as $barberShop)
-                <option value="{{ $barberShop->id }}" @selected(old('barbershop_id') == $barberShop->id)>
-                    {{ $barberShop->name }}
-                </option>
+              <option value="{{ $barberShop->id }}" @selected(old('barbershop_id') == $barberShop->id)>
+                {{ $barberShop->name }}
+              </option>
             @endforeach
-        </select><br><br>
+          </select>
+          @error('barbershop_id')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
+        </div>
 
-        <button type="submit">Save</button>
-        <a href="{{ route('barbermen.index') }}">Cancel</a>
-    </form>
-</body>
-</html>
+        <button type="submit" class="btn btn-gradient-primary me-2">Enregistrer</button>
+        <a href="{{ route('barbermen.index') }}" class="btn btn-light">Annuler</a>
+      </form>
+    </div>
+  </div>
+</div>
+@endsection

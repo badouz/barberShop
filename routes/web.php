@@ -63,9 +63,9 @@ Route::middleware('auth')->group(function () {
         ->name('services.images.primary');
 
     // Barber shop image management.
-    Route::resource('/barbershop-images', BarberShopsImagesController::class)
-        ->parameters(['barbershop-images' => 'barberShopsImage'])
+    Route::resource('/shop-images', BarberShopsImagesController::class)
+        ->parameters(['shop-images' => 'barberShopsImage'])
         ->except(['update']);
-    Route::post('/barbershop-images/{barberShopsImage}', [BarberShopsImagesController::class, 'update'])
-        ->name('barbershop-images.update');
+    Route::post('/shop-images/{barberShopsImage}', [BarberShopsImagesController::class, 'update'])
+        ->name('shop-images.update');
 });
