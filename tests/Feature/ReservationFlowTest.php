@@ -68,10 +68,10 @@ class ReservationFlowTest extends TestCase
 
         $this->post(route('reservation.selection'), [
             'service_ids' => [$service->id, $extraService->id],
-        ])->assertRedirect(route('reservation.index'));
+        ])->assertRedirect(route('reservation.booking'));
 
         $this->get(route('reservation.services'))->assertSee('checked', false);
-        $this->get(route('reservation.index'))
+        $this->get(route('reservation.booking'))
             ->assertOk()
             ->assertSee('Coupe Homme')
             ->assertSee('Taille de barbe')
@@ -86,7 +86,7 @@ class ReservationFlowTest extends TestCase
             'barberman_id' => $barber->id,
             'date' => $date,
             'time' => '15:00',
-        ])->assertRedirect(route('reservation.index'));
+        ])->assertRedirect(route('reservation.booking'));
 
         $reservation = Reservation::firstOrFail();
         $this->assertSame('80', (string) $reservation->price);
@@ -99,8 +99,45 @@ class ReservationFlowTest extends TestCase
             'reservation_id' => $reservation->id,
             'service_id' => $extraService->id,
         ]);
-        $this->get(route('reservation.index'))
+        $this->get(route('reservation.booking'))
             ->assertOk()
             ->assertSee('Votre réservation a été envoyée avec succès.');
+    }
+
+    public function test_reservation_url_shows_monthly_reservation_table(): void
+    {
+        $owner = User::factory()->create();
+        $shop = BarberShop::create([
+            'name' => 'BarberChop Centre',
+            'city' => 'Ben Guerir',
+            'user_id' => $owner->id,
+        ]);
+        $service = Service::create([
+            'name' => 'Coupe Homme',
+            'price' => 50,
+            'duration' => 30,
+            'barbershop_id' => $shop->id,
+        ]);
+        $barber = BarberMan::create([
+            'name' => 'Youssef',
+            'barbershop_id' => $shop->id,
+        ]);
+        $reservation = Reservation::create([
+            'dateReservation' => now()->toDateString(),
+            'time' => '15:00',
+            'price' => 50,
+            'barbermans_id' => $barber->id,
+            'name' => 'Ahmed Test',
+            'phone' => '0600000000',
+        ]);
+        $reservation->services()->attach($service->id);
+
+        $this->get(route('reservation.index'))
+            ->assertOk()
+            ->assertSee('Réservations du mois')
+            ->assertSee('Ahmed Test')
+            ->assertSee('Youssef')
+            ->assertSee('Coupe Homme')
+            ->assertSee('50.00 DH');
     }
 }

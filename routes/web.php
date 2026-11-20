@@ -20,9 +20,8 @@ Route::get('/reservation/services', [ReservationController::class, 'services'])
     ->name('reservation.services');
 Route::post('/mes-reservations', [ReservationController::class, 'selectServices'])
     ->name('reservation.selection');
-Route::get('/mes-reservations', [ReservationController::class, 'index'])->name('reservation.index');
-Route::get('/reservation', fn () => redirect()->route('reservation.index'))
-    ->name('reservation.create');
+Route::get('/mes-reservations', [ReservationController::class, 'booking'])->name('reservation.booking');
+Route::get('/reservation', [ReservationController::class, 'index'])->name('reservation.index');
 Route::post('/reservation', [ReservationController::class, 'store'])->name('reservation.store');
 
 // Authentication routes for guests.

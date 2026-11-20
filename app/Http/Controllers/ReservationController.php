@@ -6,6 +6,7 @@ use App\Models\BarberMan;
 use App\Models\BarberShop;
 use App\Models\Reservation;
 use App\Models\Service;
+use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -95,10 +96,45 @@ class ReservationController extends Controller
         $request->session()->put('reservation_service_ids', $services->pluck('id')->all());
         $request->session()->put('reservation_shop_id', $services->first()->barbershop_id);
 
-        return redirect()->route('reservation.index');
+        return redirect()->route('reservation.booking');
     }
 
     public function index(Request $request)
+    {
+        $month = $request->query('month', now()->format('Y-m'));
+
+        try {
+            $selectedMonth = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
+        } catch (\Throwable) {
+            $month = now()->format('Y-m');
+            $selectedMonth = now()->startOfMonth();
+        }
+
+        $reservations = Reservation::with([
+            'barberMan.barberShop',
+            'services',
+        ])
+            ->whereYear('dateReservation', $selectedMonth->year)
+            ->whereMonth('dateReservation', $selectedMonth->month)
+            ->orderBy('dateReservation')
+            ->orderBy('time')
+            ->get();
+
+        $totalRevenue = $reservations->sum('price');
+        $previousMonth = $selectedMonth->copy()->subMonth()->format('Y-m');
+        $nextMonth = $selectedMonth->copy()->addMonth()->format('Y-m');
+
+        return view('reservations-monthly', [
+            'reservations' => $reservations,
+            'selectedMonth' => $selectedMonth,
+            'monthValue' => $selectedMonth->format('Y-m'),
+            'previousMonth' => $previousMonth,
+            'nextMonth' => $nextMonth,
+            'totalRevenue' => $totalRevenue,
+        ]);
+    }
+
+    public function booking(Request $request)
     {
         $serviceIds = $request->session()->get('reservation_service_ids', []);
         $serviceIds = is_array($serviceIds) ? $serviceIds : [];
@@ -128,7 +164,7 @@ class ReservationController extends Controller
             return ['service' => $service, 'image' => $this->serviceImage($service)];
         });
 
-        return view('reservation', [
+        return view('reservation-booking', [
             'selectedServices' => $selectedServiceCards,
             'shop' => $shop,
             'appointmentTimes' => self::APPOINTMENT_TIMES,
@@ -240,7 +276,7 @@ class ReservationController extends Controller
         $request->session()->forget(['reservation_service_ids', 'reservation_shop_id']);
 
         return redirect()
-            ->route('reservation.index')
+            ->route('reservation.booking')
             ->with('success', 'Votre réservation a été envoyée avec succès.')
             ->with('confirmed_reservation', [
                 'services' => $serviceNames,
