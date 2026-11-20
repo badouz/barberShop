@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
+use App\Models\User;
 
 class UserController extends Controller
 {
@@ -11,9 +13,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        $allUsers = Schema::hasTable('auth') ? User::query()->get() : collect();
+        $users = User::all();
 
-        return view('auth.index', ['auth' => $allUsers]);
+        return view('users.index', ['users' => $users]);
     }
 
     /**
@@ -21,7 +23,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('auth.sign');
+        return view('users.create');
     }
 
     /**
@@ -39,11 +41,9 @@ class UserController extends Controller
             'city'=> $request->city,
             'address'=> $request->address,
             'zip'=> $request->zip,
-            'email'=> $request->email,
-            'password'=> $request->password,
         ]);
 
-        return redirect()->route('auth.index');
+        return redirect()->route('users.index');
     }
 
     /**
@@ -51,7 +51,9 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        return view('users.show', ['user' => $user]);
     }
 
     /**
@@ -59,7 +61,9 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        return view('users.edit', ['user' => $user]);
     }
 
     /**
@@ -67,7 +71,20 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password,
+            'name'=> $request->name,
+            'phone'=> $request->phone,
+            'city'=> $request->city,
+            'address'=> $request->address,
+            'zip'=> $request->zip,
+        ]);
+
+        return redirect()->route('users.index');
     }
 
     /**
@@ -75,6 +92,9 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return redirect()->route('users.index');
     }
 }
