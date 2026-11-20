@@ -48,33 +48,7 @@
             text-decoration: none;
         }
 
-        .site-header {
-            background: #ffffff;
-            border-bottom: 1px solid var(--border-light);
-            height: 64px;
-            display: flex;
-            align-items: center;
-        }
-        .header-inner {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .brand-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.35rem;
-            font-weight: 800;
-        }
-        .brand-icon {
-            color: var(--primary-blue);
-            display: flex;
-        }
+
 
         .main-content {
             flex: 1;
@@ -221,23 +195,7 @@
 </head>
 <body>
 
-    <header class="site-header">
-        <div class="header-inner">
-            <a href="{{ route('index') }}" class="brand-group" aria-label="CHAIR Home">
-                <span class="brand-icon">
-                    <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="6" cy="6" r="3"></circle>
-                        <circle cx="6" cy="18" r="3"></circle>
-                        <line x1="20" y1="4" x2="8.12" y2="15.88"></line>
-                        <line x1="14.47" y1="14.48" x2="20" y2="20"></line>
-                        <line x1="8.12" y1="8.12" x2="12" y2="12"></line>
-                    </svg>
-                </span>
-                <span>CHAIR</span>
-            </a>
-            <a href="{{ route('index') }}" style="font-weight:600; font-size:0.9rem; color:var(--text-slate);">Accueil</a>
-        </div>
-    </header>
+    @include('partials.chair-nav')
 
     <main class="main-content">
         <div class="confirmation-card-wrap">

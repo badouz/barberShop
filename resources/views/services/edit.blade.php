@@ -87,7 +87,7 @@ Edit Service: {{ $service->name }} - BarberShop
                         <div class="form-group mb-3">
                             <label for="duration" class="fw-bold">Duration (in minutes) <span class="text-danger">*</span></label>
                             <div class="input-group">
-                                <input type="number" min="1" step="5" name="duration" id="duration" class="form-control @error('duration') is-invalid @enderror" value="{{ old('duration', $service->duration) }}" required>
+                                <input type="number" min="1" step="1" name="duration" id="duration" class="form-control @error('duration') is-invalid @enderror" value="{{ old('duration', $service->duration) }}" required>
                                 <span class="input-group-text">mins</span>
                             </div>
                             @error('duration')

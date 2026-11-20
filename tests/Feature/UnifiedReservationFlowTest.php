@@ -125,4 +125,135 @@ class UnifiedReservationFlowTest extends TestCase
         $adminReservationsResponse->assertSee('80 DH');
         $adminReservationsResponse->assertSee('Confirmed');
     }
+
+    public function test_chair_client_navigation_has_no_admin_links_even_when_logged_in(): void
+    {
+        $admin = User::factory()->create();
+        $shop = BarberShop::create([
+            'name'      => 'Test Shop',
+            'city'      => 'Casablanca',
+            'address'   => 'Boulevard d’Anfa',
+            'zip'       => '20000',
+            'latitude'  => 33.5898,
+            'Longitude' => -7.6038,
+            'user_id'   => $admin->id,
+        ]);
+        $service = Service::create([
+            'name'          => 'Shave',
+            'description'   => 'Classic shave',
+            'price'         => 50,
+            'duration'      => 20,
+            'barbershop_id' => $shop->id,
+        ]);
+        $barber = BarberMan::create([
+            'name'          => 'Barber Test',
+            'barbershop_id' => $shop->id,
+        ]);
+        $reservation = Reservation::create([
+            'name'            => 'Client Test',
+            'phone'           => '0600000000',
+            'price'           => 50,
+            'status'          => 'confirmed',
+            'dateReservation' => now()->format('Y-m-d'),
+            'time'            => '10:00',
+            'barbermans_id'   => $barber->id,
+            'user_id'         => $admin->id,
+        ]);
+
+        $routesToTest = [
+            route('index'),
+            route('reservation.services'),
+            route('reservation.index'),
+            route('reservation.confirmation', $reservation->id),
+        ];
+
+        foreach ($routesToTest as $url) {
+            $session = ['reservation_service_ids' => [$service->id]];
+
+            // As guest
+            $guestRes = $this->withSession($session)->get($url);
+            $guestRes->assertStatus(200);
+            $guestRes->assertSee('Home');
+            $guestRes->assertSee('Reserve');
+            $guestRes->assertDontSee('Dashboard Purple');
+            $guestRes->assertDontSee('Connexion Admin');
+            $guestRes->assertDontSee('>Dashboard<', false);
+            $guestRes->assertDontSee('>Admin<', false);
+
+            // As authenticated admin
+            $authRes = $this->actingAs($admin)->withSession($session)->get($url);
+            $authRes->assertStatus(200);
+            $authRes->assertSee('Home');
+            $authRes->assertSee('Reserve');
+            $authRes->assertDontSee('Dashboard Purple');
+            $authRes->assertDontSee('Connexion Admin');
+            $authRes->assertDontSee('>Dashboard<', false);
+            $authRes->assertDontSee('>Admin<', false);
+        }
+
+        // Active state check
+        $homeRes = $this->get(route('index'));
+        $homeRes->assertSee('desktop-nav-link active">Home<', false);
+        $homeRes->assertDontSee('desktop-nav-link active">Reserve<', false);
+
+        $reserveRes = $this->get(route('reservation.services'));
+        $reserveRes->assertSee('desktop-nav-link active">Reserve<', false);
+        $reserveRes->assertDontSee('desktop-nav-link active">Home<', false);
+    }
+
+    public function test_service_duration_can_be_any_integer_like_7_and_13_minutes(): void
+    {
+        $admin = User::factory()->create();
+        $shop = BarberShop::create([
+            'name'      => 'Duration Test Shop',
+            'city'      => 'Rabat',
+            'address'   => 'Agdal',
+            'zip'       => '10000',
+            'latitude'  => 34.0,
+            'Longitude' => -6.8,
+            'user_id'   => $admin->id,
+        ]);
+
+        // 1. Create service with duration = 7
+        $createResponse = $this->actingAs($admin)->post(route('services.store'), [
+            'name'          => 'Prestation 7 mins',
+            'description'   => 'Quick touch up',
+            'price'         => 35,
+            'duration'      => 7,
+            'barbershop_id' => $shop->id,
+        ]);
+        $createResponse->assertRedirect(route('services.index'));
+
+        $service = Service::where('name', 'Prestation 7 mins')->first();
+        $this->assertNotNull($service);
+        $this->assertEquals(7, $service->duration);
+
+        // 2. Update service to duration = 13
+        $updateResponse = $this->actingAs($admin)->put(route('services.update', $service->id), [
+            'name'          => 'Prestation 13 mins',
+            'description'   => 'Updated touch up',
+            'price'         => 45,
+            'duration'      => 13,
+            'barbershop_id' => $shop->id,
+        ]);
+        $updateResponse->assertRedirect(route('services.index'));
+
+        $service->refresh();
+        $this->assertEquals(13, $service->duration);
+        $this->assertEquals('Prestation 13 mins', $service->name);
+
+        // 3. Verify duration appears in reservation services list
+        $servicesPageRes = $this->get(route('reservation.services', ['shop_id' => $shop->id]));
+        $servicesPageRes->assertStatus(200);
+        $servicesPageRes->assertSee('13 min');
+
+        // 4. Verify in reservation form & summary
+        $this->post(route('reservation.selection'), [
+            'service_ids' => [$service->id],
+            'shop_id'     => $shop->id,
+        ]);
+        $formRes = $this->get(route('reservation.index'));
+        $formRes->assertStatus(200);
+        $formRes->assertSee('13 min');
+    }
 }

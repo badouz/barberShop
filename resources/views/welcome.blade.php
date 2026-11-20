@@ -67,81 +67,7 @@
             padding: 0 20px;
         }
 
-        /* ==========================================================================
-           HEADER
-           ========================================================================== */
-        .site-header {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            background-color: #ffffff;
-            border-bottom: 1px solid var(--border-light);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-        }
 
-        .header-inner {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 64px;
-        }
-
-        .brand-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            color: var(--text-navy);
-            transition: opacity 0.2s ease;
-        }
-
-        .brand-group:hover {
-            opacity: 0.9;
-        }
-
-        .brand-icon {
-            color: var(--primary-blue);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .brand-name {
-            font-size: 22px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            color: var(--text-navy);
-        }
-
-        /* Desktop Nav in Header (hidden on mobile, visible on laptop) */
-        .desktop-nav {
-            display: none;
-        }
-
-        .desktop-nav-link {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-slate);
-            padding: 8px 16px;
-            border-radius: var(--radius-pill);
-            transition: all 0.2s ease;
-        }
-
-        .desktop-nav-link:hover {
-            color: var(--primary-blue);
-            background-color: var(--primary-blue-light);
-        }
-
-        .desktop-nav-link.active {
-            color: var(--primary-blue);
-            font-weight: 700;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
 
         .user-avatar {
             width: 40px;
@@ -734,59 +660,7 @@
             background-color: var(--primary-blue-hover);
         }
 
-        /* ==========================================================================
-           FIXED BOTTOM NAVIGATION (Mobile only)
-           ========================================================================== */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 60;
-            height: 68px;
-            background-color: rgba(255, 255, 255, 0.96);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-top: 1px solid rgba(226, 232, 240, 0.8);
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            padding: 4px 10px calc(env(safe-area-inset-bottom, 0px) + 4px);
-            box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.03);
-        }
 
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            flex: 1;
-            padding: 6px 0;
-            color: #94a3b8;
-            font-size: 11px;
-            font-weight: 600;
-            transition: color 0.15s ease;
-            text-decoration: none;
-        }
-
-        .nav-item svg {
-            transition: transform 0.15s ease, color 0.15s ease;
-        }
-
-        .nav-item:hover {
-            color: var(--primary-blue);
-        }
-
-        .nav-item.active {
-            color: var(--primary-blue);
-            font-weight: 700;
-        }
-
-        .nav-item.active svg {
-            transform: scale(1.08);
-            color: var(--primary-blue);
-        }
 
         /* ==========================================================================
            MEDIA QUERIES (Tablet & Laptop)
@@ -828,16 +702,7 @@
                 padding: 40px 0 60px;
             }
 
-            /* Show desktop nav in header */
-            .desktop-nav {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            }
 
-            .header-inner {
-                height: 76px;
-            }
 
             /* Two-column Hero Area */
             .hero-layout {
@@ -918,43 +783,7 @@
     <!-- ==========================================================================
          TOP HEADER
          ========================================================================== -->
-    <header class="site-header">
-        <div class="container">
-            <div class="header-inner">
-                <!-- Brand logo with blue scissors -->
-                <a href="{{ route('index') }}" class="brand-group" aria-label="CHAIR Home">
-                    <span class="brand-icon">
-                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <circle cx="6" cy="6" r="3"></circle>
-                            <circle cx="6" cy="18" r="3"></circle>
-                            <line x1="20" y1="4" x2="8.12" y2="15.88"></line>
-                            <line x1="14.47" y1="14.48" x2="20" y2="20"></line>
-                            <line x1="8.12" y1="8.12" x2="12" y2="12"></line>
-                        </svg>
-                    </span>
-                    <span class="brand-name">CHAIR</span>
-                </a>
-
-                <!-- Desktop Navigation Links (laptop only) -->
-                <nav class="desktop-nav" aria-label="Main navigation">
-                    <a href="{{ route('index') }}" class="desktop-nav-link active">Home</a>
-                    <a href="{{ route('reservation.services') }}" class="desktop-nav-link">Reserve</a>
-                    @auth
-                        <a href="{{ route('dashboard') }}" class="desktop-nav-link">Dashboard</a>
-                    @endauth
-                </nav>
-
-                <!-- Actions -->
-                <div class="header-actions">
-                    @auth
-                        <a href="{{ route('dashboard') }}" class="btn-book-secondary" style="padding: 8px 18px; font-size: 13px; text-decoration:none;">Dashboard Purple</a>
-                    @else
-                        <a href="{{ route('login') }}" class="btn-book-secondary" style="padding: 8px 18px; font-size: 13px; text-decoration:none;">Connexion Admin</a>
-                    @endauth
-                </div>
-            </div>
-        </div>
-    </header>
+    @include('partials.chair-nav')
 
     <!-- ==========================================================================
          MAIN CONTENT AREA
@@ -1112,27 +941,7 @@
     <!-- ==========================================================================
          FIXED BOTTOM NAVIGATION (Mobile only, hidden on laptop >= 1024px)
          ========================================================================== -->
-    <nav class="bottom-nav" aria-label="Bottom Navigation">
-        <!-- Home (Active) -->
-        <a href="{{ route('index') }}" class="nav-item active" aria-current="page">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                <polyline points="9 22 9 12 15 12 15 22"></polyline>
-            </svg>
-            <span>Home</span>
-        </a>
-
-        <!-- Reserve -->
-        <a href="{{ route('reservation.services') }}" class="nav-item">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="16" y1="2" x2="16" y2="6"></line>
-                <line x1="8" y1="2" x2="8" y2="6"></line>
-                <line x1="3" y1="10" x2="21" y2="10"></line>
-            </svg>
-            <span>Reserve</span>
-        </a>
-    </nav>
+    @{{-- bottom-nav rendered by chair-nav partial above --}}
 
     <!-- ==========================================================================
          CLIENT JAVASCRIPT: Search & Category Filter

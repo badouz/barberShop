@@ -61,50 +61,7 @@
             padding: 0 20px;
         }
 
-        /* Header */
-        .site-header {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            background: #ffffff;
-            border-bottom: 1px solid var(--border-light);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-        }
-        .header-inner {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 64px;
-        }
-        .brand-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.35rem;
-            font-weight: 800;
-            letter-spacing: -0.02em;
-        }
-        .brand-icon {
-            color: var(--primary-blue);
-            display: flex;
-        }
-        .header-nav {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .nav-link {
-            padding: 8px 16px;
-            border-radius: var(--radius-pill);
-            font-size: 0.92rem;
-            font-weight: 600;
-            color: var(--text-slate);
-            transition: all 0.2s;
-        }
-        .nav-link:hover, .nav-link.active {
-            color: var(--primary-blue);
-            background: var(--primary-blue-light);
-        }
+
 
         /* Page Intro */
         .page-intro {
@@ -396,30 +353,7 @@
 <body>
 
     <!-- Header -->
-    <header class="site-header">
-        <div class="container header-inner">
-            <a href="{{ route('index') }}" class="brand-group" aria-label="CHAIR Home">
-                <span class="brand-icon">
-                    <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="6" cy="6" r="3"></circle>
-                        <circle cx="6" cy="18" r="3"></circle>
-                        <line x1="20" y1="4" x2="8.12" y2="15.88"></line>
-                        <line x1="14.47" y1="14.48" x2="20" y2="20"></line>
-                        <line x1="8.12" y1="8.12" x2="12" y2="12"></line>
-                    </svg>
-                </span>
-                <span>CHAIR</span>
-            </a>
-
-            <nav class="header-nav">
-                <a href="{{ route('index') }}" class="nav-link">Home</a>
-                <a href="{{ route('reservation.services') }}" class="nav-link active">Reserve</a>
-                @auth
-                    <a href="{{ route('dashboard') }}" class="nav-link" style="color:var(--primary-blue);">Admin</a>
-                @endauth
-            </nav>
-        </div>
-    </header>
+    @include('partials.chair-nav')
 
     <main class="container">
         <div class="page-intro">
