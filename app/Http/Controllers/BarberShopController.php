@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\BarberShop;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Auth;
 
 class BarberShopController extends Controller
@@ -14,14 +13,13 @@ class BarberShopController extends Controller
      */
     public function index()
     {
+        $user = Auth::user();
 
-    if(Auth::user()->isAdmin()){
-        $barbershops = BarberShop::latest()->paginate(10);
-    }
-
-    if(Auth::user()->isBarberShop()){
-        $barbershops = Auth::user()->barberShops()->paginate(10);
-    }
+        if ($user && $user->isAdmin()) {
+            $barbershops = BarberShop::latest()->paginate(10);
+        } else {
+            $barbershops = $user->barberShops()->latest()->paginate(10);
+        }
         
         return view('barbershop.index', compact('barbershops'));
     }
@@ -48,7 +46,7 @@ class BarberShopController extends Controller
             'Longitude' => ['required', 'numeric', 'between:-180,180'],
         ]);
 
-        $data['user_id'] = auth()->id();
+        $data['user_id'] = Auth::id();
         BarberShop::create($data);
         return redirect()->route('barbershop.index')->with('success', 'Barbershop créé avec succès!');
     }
@@ -58,6 +56,8 @@ class BarberShopController extends Controller
      */
     public function show(BarberShop $barbershop)
     {
+        $this->authorizeShop($barbershop);
+
         return view('barbershop.show', ['barbershop' => $barbershop]);
     }
 
@@ -66,6 +66,8 @@ class BarberShopController extends Controller
      */
     public function edit(BarberShop $barbershop)
     {
+        $this->authorizeShop($barbershop);
+
         return view('barbershop.edit', ['barbershop' => $barbershop]);
     }
 
@@ -74,6 +76,8 @@ class BarberShopController extends Controller
      */
     public function update(Request $request, BarberShop $barbershop)
     {
+        $this->authorizeShop($barbershop);
+
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'city' => ['required', 'string', 'max:100'],
@@ -92,7 +96,20 @@ class BarberShopController extends Controller
      */
     public function destroy(BarberShop $barbershop)
     {
+        $this->authorizeShop($barbershop);
+
         $barbershop->delete();
         return redirect()->route('barbershop.index')->with('success', 'Barbershop supprimé avec succès!');
+    }
+
+    /**
+     * Authorize that the authenticated barbershop owns this shop.
+     */
+    private function authorizeShop(BarberShop $barbershop): void
+    {
+        $user = Auth::user();
+        if ($user && $user->isBarberShop() && (int)$barbershop->user_id !== (int)$user->id) {
+            abort(403, 'Accès interdit. Ce salon ne vous appartient pas.');
+        }
     }
 }

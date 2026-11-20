@@ -29,6 +29,7 @@ class User extends Authenticatable
         'city',
         'address',
         'zip',
+        'role',
     ];
 
     /**
@@ -51,11 +52,19 @@ class User extends Authenticatable
         return $this->hasMany(Reservation::class, 'user_id', 'id');
     }
 
-    public function isAdmin(){
-        return $this->role === self::ADMIN;
+    public function isAdmin(): bool
+    {
+        return strtoupper((string) $this->role) === self::ADMIN;
     }
-      public function isBarberShop(){
-        return $this->role === self::BARBER_SHOP;
+
+    public function isBarberShop(): bool
+    {
+        return strtoupper((string) $this->role) === self::BARBER_SHOP;
+    }
+
+    public function barberShopIds(): array
+    {
+        return $this->barberShops()->pluck('id')->toArray();
     }
     /**
      * Get the attributes that should be cast.

@@ -32,8 +32,15 @@
                 </div>
                 <h4>Hello! let's get started</h4>
                 <h6 class="font-weight-light">Sign in to continue.</h6>
+
+                @if(session('success'))
+                    <div class="alert alert-success py-2 mb-3 small">
+                        <i class="mdi mdi-check-circle me-1"></i> {{ session('success') }}
+                    </div>
+                @endif
+
                 @error('email')
-                    <div class="text-danger">
+                    <div class="text-danger mb-2 small">
                         {{ $message }}
                     </div>
                 @enderror
@@ -61,6 +68,18 @@
                   <div class="text-center mt-4 font-weight-light"> Don't have an account? <a href="{{route('register')}}" class="text-primary">Create</a>
                   </div>
                 </form>
+
+                <div class="mt-4 p-3 bg-light rounded text-start border small">
+                  <div class="fw-bold text-dark mb-1"><i class="mdi mdi-key-outline text-primary me-1"></i> Comptes de test (MDP: <code>12345678</code>) :</div>
+                  <ul class="mb-2 ps-3 text-muted">
+                    <li><strong>Shop Y :</strong> <code>ahmed@gmail.com</code></li>
+                    <li><strong>Shop X :</strong> <code>demo@barberchop.test</code></li>
+                    <li><strong>Admin :</strong> <code>moustacharahmad@gmail.com</code></li>
+                  </ul>
+                  <a href="{{ route('setup.test.accounts') }}" class="btn btn-sm btn-outline-primary w-100 py-1">
+                    <i class="mdi mdi-refresh me-1"></i> Réinitialiser les mots de passe (1-Click)
+                  </a>
+                </div>
               </div>
             </div>
           </div>

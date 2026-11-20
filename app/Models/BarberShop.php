@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class BarberShop extends Model
     {
@@ -24,6 +25,11 @@ class BarberShop extends Model
     public function barberMen(): HasMany
     {
         return $this->hasMany(BarberMan::class, 'barbershop_id', 'id');
+    }
+
+    public function reservations(): HasManyThrough
+    {
+        return $this->hasManyThrough(Reservation::class, BarberMan::class, 'barbershop_id', 'barbermans_id', 'id', 'id');
     }
 
     public function services(): HasMany

@@ -190,7 +190,7 @@
                 </div>
                 <div class="nav-profile-text d-flex flex-column">
                   <span class="font-weight-bold mb-2">{{Auth::user()->name}}</span>
-                  <span class="text-secondary text-small">Barbershop Admin</span>
+                  <span class="text-secondary text-small">{{ Auth::user()->isAdmin() ? 'Super Admin' : 'Barbershop' }}</span>
                 </div>
                 <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
               </a>
@@ -213,14 +213,12 @@
                 <i class="mdi mdi-account-tie menu-icon"></i>
               </a>
             </li>
-      @if(auth::user()->isAdmin())
             <li class="nav-item">
               <a class="nav-link {{ request()->routeIs('services.*') ? 'active' : '' }}" href="{{ route('services.index') }}">
                 <span class="menu-title">Services</span>
                 <i class="mdi mdi-content-cut menu-icon"></i>
               </a>
             </li>
-    @endif
             <li class="nav-item">
               <a class="nav-link {{ request()->routeIs('barbershop.*') ? 'active' : '' }}" href="{{ route('barbershop.index') }}">
                 <span class="menu-title">Barbershops</span>
@@ -233,12 +231,14 @@
                 <i class="mdi mdi-image-multiple menu-icon"></i>
               </a>
             </li>
+            @if(Auth::user()->isAdmin())
             <li class="nav-item">
               <a class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}">
                 <span class="menu-title">Users</span>
                 <i class="mdi mdi-account-group menu-icon"></i>
               </a>
             </li>
+            @endif
           </ul>
         </nav>
         <!-- partial -->

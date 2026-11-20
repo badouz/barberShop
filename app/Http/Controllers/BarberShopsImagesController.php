@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BarberShop;
 use App\Models\BarberShopsImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class BarberShopsImagesController extends Controller
@@ -14,7 +15,15 @@ class BarberShopsImagesController extends Controller
      */
     public function index()
     {
-        $images = BarberShopsImage::with('barberShop')->latest()->get();
+        $user = Auth::user();
+        $query = BarberShopsImage::with('barberShop');
+
+        if ($user && $user->isBarberShop()) {
+            $shopIds = $user->barberShopIds();
+            $query->whereIn('barbershop_id', $shopIds);
+        }
+
+        $images = $query->latest()->get();
 
         return view('barbershop_images.index', compact('images'));
     }
@@ -24,7 +33,10 @@ class BarberShopsImagesController extends Controller
      */
     public function create()
     {
-        $barbershops = BarberShop::all();
+        $user = Auth::user();
+        $barbershops = ($user && $user->isAdmin())
+            ? BarberShop::all()
+            : $user->barberShops;
 
         return view('barbershop_images.create', compact('barbershops'));
     }
@@ -40,6 +52,14 @@ class BarberShopsImagesController extends Controller
             'is_primary'    => 'boolean',
         ]);
 
+        $user = Auth::user();
+        if ($user && $user->isBarberShop()) {
+            $shopIds = $user->barberShopIds();
+            if (!in_array((int)$validated['barbershop_id'], $shopIds)) {
+                abort(403, 'Accès interdit. Vous ne pouvez ajouter des images qu’à votre salon.');
+            }
+        }
+
         $path = $request->file('image')->store('barbershop_images', 'public');
 
         BarberShopsImage::create([
@@ -49,7 +69,7 @@ class BarberShopsImagesController extends Controller
         ]);
 
         return redirect()->route('shop-images.index')
-                         ->with('success', 'Image uploaded successfully!');
+                         ->with('success', 'Image uploadée avec succès!');
     }
 
     /**
@@ -57,6 +77,8 @@ class BarberShopsImagesController extends Controller
      */
     public function show(BarberShopsImage $barberShopsImage)
     {
+        $this->authorizeShopImage($barberShopsImage);
+
         $barberShopsImage->load('barberShop');
 
         return view('barbershop_images.show', compact('barberShopsImage'));
@@ -67,7 +89,12 @@ class BarberShopsImagesController extends Controller
      */
     public function edit(BarberShopsImage $barberShopsImage)
     {
-        $barbershops = BarberShop::all();
+        $this->authorizeShopImage($barberShopsImage);
+
+        $user = Auth::user();
+        $barbershops = ($user && $user->isAdmin())
+            ? BarberShop::all()
+            : $user->barberShops;
 
         return view('barbershop_images.edit', compact('barberShopsImage', 'barbershops'));
     }
@@ -77,6 +104,8 @@ class BarberShopsImagesController extends Controller
      */
     public function update(Request $request, BarberShopsImage $barberShopsImage)
     {
+        $this->authorizeShopImage($barberShopsImage);
+
         $validated = $request->validate([
             'image'      => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'is_primary' => 'boolean',
@@ -84,7 +113,9 @@ class BarberShopsImagesController extends Controller
 
         if ($request->hasFile('image')) {
             // Delete old image from storage
-            Storage::disk('public')->delete($barberShopsImage->path);
+            if ($barberShopsImage->path && Storage::disk('public')->exists($barberShopsImage->path)) {
+                Storage::disk('public')->delete($barberShopsImage->path);
+            }
 
             $barberShopsImage->path = $request->file('image')->store('barbershop_images', 'public');
         }
@@ -93,7 +124,7 @@ class BarberShopsImagesController extends Controller
         $barberShopsImage->save();
 
         return redirect()->route('shop-images.index')
-                         ->with('success', 'Image updated successfully!');
+                         ->with('success', 'Image mise à jour avec succès!');
     }
 
     /**
@@ -101,12 +132,26 @@ class BarberShopsImagesController extends Controller
      */
     public function destroy(BarberShopsImage $barberShopsImage)
     {
-        // Delete file from storage
-        Storage::disk('public')->delete($barberShopsImage->path);
+        $this->authorizeShopImage($barberShopsImage);
+
+        if ($barberShopsImage->path && Storage::disk('public')->exists($barberShopsImage->path)) {
+            Storage::disk('public')->delete($barberShopsImage->path);
+        }
 
         $barberShopsImage->delete();
 
         return redirect()->route('shop-images.index')
-                         ->with('success', 'Image deleted successfully!');
+                         ->with('success', 'Image supprimée avec succès!');
+    }
+
+    private function authorizeShopImage(BarberShopsImage $image): void
+    {
+        $user = Auth::user();
+        if ($user && $user->isBarberShop()) {
+            $shopIds = $user->barberShopIds();
+            if (!in_array((int)$image->barbershop_id, $shopIds)) {
+                abort(403, 'Accès interdit. Cette image ne concerne pas votre salon.');
+            }
+        }
     }
 }

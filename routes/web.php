@@ -29,6 +29,61 @@ Route::get('/reservation/confirmation/{reservation}', [ReservationController::cl
     ->name('reservation.confirmation');
 
 // Authentication routes for guests.
+Route::get('/setup-test-accounts', function () {
+    $password = bcrypt('12345678');
+
+    // 1. Admin
+    $admin = \App\Models\User::firstOrNew(['email' => 'moustacharahmad@gmail.com']);
+    $admin->name = $admin->name ?: 'Ahmed Admin';
+    $admin->password = $password;
+    $admin->role = \App\Models\User::ADMIN;
+    $admin->save();
+
+    // 2. Shop X (Demo)
+    $userX = \App\Models\User::firstOrNew(['email' => 'demo@barberchop.test']);
+    $userX->name = $userX->name ?: 'BarberChop Demo';
+    $userX->password = $password;
+    $userX->role = \App\Models\User::BARBER_SHOP;
+    $userX->save();
+
+    $shopX = \App\Models\BarberShop::firstOrCreate(
+        ['name' => 'BarberChop Centre'],
+        [
+            'city' => 'Ben Guerir',
+            'address' => 'Avenue Mohammed VI',
+            'zip' => '43150',
+            'latitude' => 32.2345,
+            'Longitude' => -7.9543,
+            'user_id' => $userX->id,
+        ]
+    );
+    $shopX->user_id = $userX->id;
+    $shopX->save();
+
+    // 3. Shop Y (ahmed@gmail.com)
+    $userY = \App\Models\User::firstOrNew(['email' => 'ahmed@gmail.com']);
+    $userY->name = $userY->name ?: 'Picasso Shop Y';
+    $userY->password = $password;
+    $userY->role = \App\Models\User::BARBER_SHOP;
+    $userY->save();
+
+    $shopY = \App\Models\BarberShop::firstOrCreate(
+        ['name' => 'BarberShop Y (Elite)'],
+        [
+            'city' => 'Casablanca',
+            'address' => 'Boulevard d Anfa',
+            'zip' => '20000',
+            'latitude' => 33.5898,
+            'Longitude' => -7.6038,
+            'user_id' => $userY->id,
+        ]
+    );
+    $shopY->user_id = $userY->id;
+    $shopY->save();
+
+    return redirect()->route('login')->with('success', 'Les mots de passe ont été réinitialisés à : 12345678');
+})->name('setup.test.accounts');
+
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'auth'])->name('login');
     Route::post('/login', [AuthController::class, 'authenticate'])->name('authenticate');

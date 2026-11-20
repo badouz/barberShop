@@ -22,12 +22,12 @@ class ServiceController extends Controller
                         ->paginate(10);
         }
         if(Auth::user()->isBarberShop()){
-
-            Auth::user()->barberShops()->findOrFail($id);
-            $services = BarberShop::find($id)->services()->latest()
-                        ->paginate(10);
-             
-
+            if ($id && Auth::user()->barberShops()->where('id', $id)->exists()) {
+                $services = BarberShop::find($id)->services()->latest()->paginate(10);
+            } else {
+                $shopIds = Auth::user()->barberShops()->pluck('id');
+                $services = Service::whereIn('barbershop_id', $shopIds)->latest()->paginate(10);
+            }
         }
         // Load services with their barbershop and images
        
