@@ -19,6 +19,8 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+    Public const ADMIN = 'ADMIN';
+    Public const BARBER_SHOP = 'BARBERSHOP';
     protected $fillable = [
         'name',
         'email',
@@ -43,12 +45,20 @@ class User extends Authenticatable
     {
         return $this->hasMany(BarberShop::class, 'user_id', 'id');
     }
-
+    
     public function reservations(): HasMany
     {
         return $this->hasMany(Reservation::class, 'user_id', 'id');
     }
 
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ADMIN;
+    }
+    public function isBarberShop(): bool
+    {
+        return $this->role === self::BARBER_SHOP;
+    }
     /**
      * Get the attributes that should be cast.
      *
