@@ -213,12 +213,14 @@ class ReservationController extends Controller
                 }
 
                 $reservation = Reservation::create([
+                    'user_id' => auth()->id(),
                     'dateReservation' => $validated['date'],
                     'time' => $validated['time'],
                     'price' => $totalPrice,
                     'barbermans_id' => $barber->id,
                     'name' => $validated['name'],
                     'phone' => $validated['phone'],
+                    'status' => 'confirmed',
                 ]);
 
                 $reservation->services()->attach($services->modelKeys());

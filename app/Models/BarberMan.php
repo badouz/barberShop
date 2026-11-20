@@ -22,6 +22,6 @@ class BarberMan extends Model
 
     public function reservations(): HasMany
     {
-        return $this->hasMany(Reservation::class, 'barberman_id', 'id');
+        return $this->hasMany(Reservation::class, 'barbermans_id', 'id');
     }
 }

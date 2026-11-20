@@ -8,14 +8,23 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Reservation extends Model
 {
+    protected $table = 'reservations';
+
     protected $fillable = [
+        'user_id',
         'dateReservation',
         'time',
         'price',
         'barbermans_id',
         'name',
         'phone',
+        'status',
     ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 
     public function barberMan(): BelongsTo
     {
@@ -24,6 +33,11 @@ class Reservation extends Model
 
     public function services(): BelongsToMany
     {
-        return $this->belongsToMany(Service::class, 'reservationsservices');
+        return $this->belongsToMany(Service::class, 'reservationsservices', 'reservation_id', 'service_id');
+    }
+
+    public function getBarberShopAttribute()
+    {
+        return $this->barberMan?->barberShop;
     }
 }

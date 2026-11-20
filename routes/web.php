@@ -4,16 +4,32 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarberManController;
 use App\Http\Controllers\BarberShopController;
 use App\Http\Controllers\BarberShopsImagesController;
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashBoardController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-// Public entry point.
+// Public entry point – landing page (no auth required).
 Route::get('/', function () {
     return view('welcome');
 })->name('index');
+
+// ─── CHAIR Client Area ───────────────────────────────────────────────────────
+Route::prefix('client')->name('client.')->middleware('auth')->group(function () {
+    Route::get('/',                                              [ClientController::class, 'home'])               ->name('home');
+    Route::get('/shop/{shop}',                                   [ClientController::class, 'shop'])               ->name('shop');
+    Route::get('/reserve/{shop}',                                [ClientController::class, 'reserve'])            ->name('reserve');
+    Route::post('/reserve/{shop}',                               [ClientController::class, 'storeReservation'])   ->name('store');
+    Route::get('/booking-success/{reservation}',                 [ClientController::class, 'bookingSuccess'])     ->name('booking-success');
+    Route::get('/bookings',                                      [ClientController::class, 'myBookings'])         ->name('bookings');
+    Route::get('/bookings/{reservation}',                        [ClientController::class, 'reservationDetails']) ->name('booking-detail');
+    Route::patch('/bookings/{reservation}/cancel',               [ClientController::class, 'cancelReservation']) ->name('cancel');
+    Route::patch('/bookings/{reservation}/reschedule',           [ClientController::class, 'reschedule'])         ->name('reschedule');
+    Route::get('/settings',                                      [ClientController::class, 'settings'])           ->name('settings');
+    Route::patch('/settings',                                    [ClientController::class, 'updateSettings'])     ->name('settings.update');
+});
 
 // Public service catalog used by the landing page and reservation flow.
 Route::get('/reservation/services', [ReservationController::class, 'services'])

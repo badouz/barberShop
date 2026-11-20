@@ -44,6 +44,11 @@ class User extends Authenticatable
         return $this->hasMany(BarberShop::class, 'user_id', 'id');
     }
 
+    public function reservations(): HasMany
+    {
+        return $this->hasMany(Reservation::class, 'user_id', 'id');
+    }
+
     /**
      * Get the attributes that should be cast.
      *
