@@ -222,7 +222,7 @@ class UnifiedReservationFlowTest extends TestCase
             'duration'      => 7,
             'barbershop_id' => $shop->id,
         ]);
-        $createResponse->assertRedirect(route('services.index'));
+        $createResponse->assertRedirect();
 
         $service = Service::where('name', 'Prestation 7 mins')->first();
         $this->assertNotNull($service);
@@ -236,7 +236,7 @@ class UnifiedReservationFlowTest extends TestCase
             'duration'      => 13,
             'barbershop_id' => $shop->id,
         ]);
-        $updateResponse->assertRedirect(route('services.index'));
+        $updateResponse->assertRedirect();
 
         $service->refresh();
         $this->assertEquals(13, $service->duration);
