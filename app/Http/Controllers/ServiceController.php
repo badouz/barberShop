@@ -16,18 +16,20 @@ class ServiceController extends Controller
      */
     public function index($id=0)
     {
-        if(Auth::user()->isAdmin()){
+        $user = Auth::user();
+
+        if ($user && $user->isBarberShop()) {
+            if ($id > 0) {
+                $user->barberShops()->findOrFail($id);
+                $services = BarberShop::find($id)->services()->latest()->paginate(10);
+            } else {
+                $shopIds = $user->barberShops()->pluck('id');
+                $services = Service::whereIn('barbershop_id', $shopIds)->latest()->paginate(10);
+            }
+        } else {
             $services = Service::with(['barberShop', 'serviceImages', 'primaryImage'])
                         ->latest()
                         ->paginate(10);
-        }
-        if(Auth::user()->isBarberShop()){
-
-            Auth::user()->barberShops()->findOrFail($id);
-            $services = BarberShop::find($id)->services()->latest()
-                        ->paginate(10);
-             
-
         }
 
         return view('services.index', compact('services'));

@@ -14,13 +14,13 @@ class BarberShopController extends Controller
      */
     public function index()
     {
-    if(Auth::user()->isAdmin()){
-        $barbershops = BarberShop::latest()->paginate(10);
-    }
+        $user = Auth::user();
 
-    if(Auth::user()->isBarberShop()){
-        $barbershops = Auth::user()->barberShops()->paginate(10);
-    }
+        if ($user && $user->isBarberShop()) {
+            $barbershops = $user->barberShops()->paginate(10);
+        } else {
+            $barbershops = BarberShop::latest()->paginate(10);
+        }
         
         return view('barbershop.index', compact('barbershops'));
     }
