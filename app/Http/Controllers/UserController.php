@@ -23,7 +23,6 @@ class UserController extends Controller
      */
     public function create()
     {
-        $table->string('role')->default('BARBERSHOP');
         return view('users.create');
     }
 
@@ -42,8 +41,8 @@ class UserController extends Controller
             'city'=> $request->city,
             'address'=> $request->address,
             'zip'=> $request->zip,
+            'role'=> $request->role,
         ]);
-        $table->string('role')->default('BARBERSHOP');
 
         return redirect()->route('users.index');
     }
@@ -84,6 +83,7 @@ class UserController extends Controller
             'city'=> $request->city,
             'address'=> $request->address,
             'zip'=> $request->zip,
+            'role'=> $request->role,
         ]);
 
         return redirect()->route('users.index');

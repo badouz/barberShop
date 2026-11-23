@@ -46,6 +46,7 @@ class AuthController extends Controller
             'zip' => ['required'],
             'email' => ['required', 'email'],
             'password' => ['required'],
+            'role' => ['required'],
         ]);
 
         User::create(

@@ -70,6 +70,9 @@
                   <div class="form-group">
                     <input type="password" name="password" class="form-control form-control-lg" id="exampleInputPassword1" placeholder="Password">
                   </div>
+                  <div class="form-group">
+                    <input type="text" name="role" class="form-control form-control-lg" id="exampleInputRole1" placeholder="Role" value="BARBERSHOP" hidden>
+                  </div>
                   <div class="mb-4">
                     <div class="form-check">
                       <label class="form-check-label text-muted">
