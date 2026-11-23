@@ -10,20 +10,32 @@ use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
+    public function run(): void 
+    {
+        $this->call([
+            CreatesuperAdminSeeder::class,
+            BarberShopSeeder::class,
+            BarberManSeeder::class,
+            BarberShopsImageSeeder::class,
+            ServiceSeeder::class,
+            ServicesImageSeeder::class,
+            ReservationSeeder::class,
+        ]);
+    }
+    // use WithoutModelEvents;
 
     /**
      * Seed the application's database.
      */
-    public function run(): void
-    {
-        // User::factory(10)->create();
+    // public function run(): void
+    // {
+    //     // User::factory(10)->create();
 
-        User::firstOrCreate(
-            ['email' => 'test@example.com'],
-            ['name' => 'Test User', 'password' => Hash::make(Str::random(40))]
-        );
+    //     User::firstOrCreate(
+    //         ['email' => 'test@example.com'],
+    //         ['name' => 'Test User', 'password' => Hash::make(Str::random(40))]
+    //     );
 
-        $this->call(BarberShopServicesSeeder::class);
-    }
+    //     $this->call(BarberShopServicesSeeder::class);
+    // }
 }
